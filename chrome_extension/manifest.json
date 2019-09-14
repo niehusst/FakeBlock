@@ -4,13 +4,13 @@
 	"version": "1.0",
 	"description": "A chrome plugin to prevent Facebook users from becoming misinformed by their news feed by obscuring posts determined to be fake news.",
 	"icons": {
-		"128": "icons/",
-		"48": "icons/",
-		"16": "icons/"
+		"128": "icons/fbicon128.png",
+		"48": "icons/fbicon48.png",
+		"16": "icons/fbicon16.png"
 	},
 
 	"page_action": {
-		"icon": "icons/",
+		"icon": "icons/fbicon16.png",
 		"default_popup": "html/popup.html",
 		"default_title": "FakeBlock"
 	},
