@@ -1,6 +1,6 @@
 # FakeBlock
-A plugin to prevent Facebook users from becoming misinformed by fake news 
-in their news feed by obscuring posts determined to be fake news.
+A chrome plugin to prevent Facebook users from becoming misinformed by 
+their news feeds by obscuring posts determined to be fake news.
 Utilizing a mixture of AI and the Google fact checking API, FakeBlock
 meticulously examines each post to determine its legitimacy before
 allowing it to be shown to the user.
