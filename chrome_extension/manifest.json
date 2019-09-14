@@ -25,7 +25,7 @@
 	"content_scripts": [
 		{
 			"matches": ["https://www.facebook.com/?sk=nf"],//TODO: enable on more than just newsfeed URL so right click context menu available on any post??
-			"js": ["js/content.js", "js/blocker.js", "js/jquery341.js"],
+			"js": ["js/jquery341.js", "js/content.js", "js/blocker.js"],
 			"css": ["css/blocker.css"]
 		}
 	],
