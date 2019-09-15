@@ -1,1 +1,49 @@
 /* Styling for post blocker */
+
+.block_img {
+	float: left;
+	width: 128px;
+	height: 128px;
+	padding: 50px 40px;
+}
+
+.block_txt {
+	font-size: 24px;
+	font-family: sans-serif;
+	padding: 60px 0;
+}
+
+.read_btn {
+	border-radius: 15%;
+	padding: 15px 32px;
+	font-size: 30px;
+	text-align: center;
+	background: #4a99ed;
+	border-color: black;
+	-webkit-transition-duration: 0.4s; /* Safari */
+	border: 3px;
+	border-style: solid;
+	border-radius: 100px;
+	font-family: sans-serif;
+	color: white;
+}
+
+.read_btn:hover {
+	cursor: pointer;
+	background: white;
+	color: #4a99ed;
+}
+
+.bg_filler {
+	background: #ffb3b3;
+}
+
+.btn_houser {
+	display: block;
+	text-align: center;
+	padding-bottom: 15px;
+}
+
+.content_houser {
+	display: inline-block;
+}
