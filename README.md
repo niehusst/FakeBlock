@@ -10,5 +10,5 @@ allowing it to be shown to the user.
 
 ## Acknowledgements
 * Logo and images used were adjusted from stock images under Createive Commons and from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
-* [Imgur]() for free online image hosting
+* [Imgur](https://imgur.com/) for free online image hosting
 * [Google fact checking API](https://developers.google.com/fact-check/tools/api/)
