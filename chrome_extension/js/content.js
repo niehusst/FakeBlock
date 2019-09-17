@@ -7,13 +7,6 @@ has control over changing the DOM, but cant use chrome apis
 chrome.runtime.sendMessage({todo: "showPageAction"});
 
 
-/*
-array of IDs of blocked posts; only need to iterate list activating/deactivating
-each element when the extension is activated/deactivated
-*/
-var blockedPosts = [];
-
-
 /** 
  * Inject blocker html before the comments html
  *
@@ -21,8 +14,6 @@ var blockedPosts = [];
  * @param visibility - Boolean, whether the inject HTML is displayed or not
  */
 function injectBlock(targetPost) {
-	//TODO use visibility!!!
-
 	//TODO determine which image/text to use based on response from API?
 	// construct programatically instead? add id attribute??
 	var blocker_html = `
@@ -69,16 +60,37 @@ function closeBlock(target) {
 }
 
 
+/*
+array of IDs of blocked posts; only need to iterate list activating/deactivating
+each element when the extension is activated/deactivated
+*/
+var blockedPosts = [];
+
 /**
- * Reset the display CSS atribute on any previously blocked posts to block
- * (nice coincidence)
+ * For each post marked as blocked, set the display CSS atribute to block,
+ * and hiding the post contents.
  */
 function reblockAllFakePosts() {
-    var targets = document.getElementsByClassName("bg_filler");
-    for(var i = 0; i < targets.length; i++) {
-        targets[i].style.display = 'block';
+    for(var postNum = 0; postNum < blockedPosts.length; postNum++) {
+    	var post = $("#" + blockedPosts[postNum]);
+    	toggleContents(post, false);
+    	post.find('.bg_filler').toggle(true);
     }
 }
+
+/**
+ * Set the display CSS atribute on any currently blocked posts to none
+ * and reveal the hidden post contents.
+ */
+function unblockAllPosts() {
+	for(var postNum = 0; postNum < blockedPosts.length; postNum++) {
+    	var post = $("#" + blockedPosts[postNum]);
+    	toggleContents(post, true);
+    	post.find('.bg_filler').toggle(false);
+    }
+}
+
+
 
 /** 
  * Remove or reveal contents (image, vid, text) from targetPost via display CSS
@@ -106,10 +118,24 @@ function isFakeNews(targetPost) {
 	return Math.round(Math.random());
 }
 
+
+//TODO: is it ok that this is just true by default to start with?
+// what about when chrome storage has saved false from prev session???
+var activated = true; 
+
+// catch runtime messages about activation state changes
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+	activated = (request.todo === "blockPosts");
+	if (!activated) {
+		unblockAllPosts();
+	} else { //block posts
+		reblockAllFakePosts();
+	}
+});
+
+
 // take action on all facebook posts
 $(function() {
-	console.log("right before live query");
-	
 	var visitedPosts = {};
 	
 	// run a 'live query' on each post as it's added to DOM
@@ -124,7 +150,6 @@ $(function() {
 			if (isFakeNews($(this))) {
 
 				// only hide contents of posts if activated
-				var activated = true; //TODO: get this from storage (i.e. events.js needs to send some info?)
 				if (activated) {
 					// hide post contents and inject blocky notice
 					toggleContents($(this), false);
@@ -132,8 +157,8 @@ $(function() {
 				}
 
 				// save post as blocked
+				//TODO unecessary???
 				blockedPosts.push($(this).attr('id'));
-				console.log(blockedPosts.length);
 			}
 		}
 	});
@@ -143,6 +168,7 @@ $(function() {
 		closeBlock($(this));
 	});
 });
+
 
 
 
