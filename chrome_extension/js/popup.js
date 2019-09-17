@@ -17,12 +17,9 @@ $(function() {
 	// listen for switch presses
 	$('#activate_switch').change(function() {
 		// change the state of the activation
-		chrome.storage.sync.get(['activated'], function(state) {
-			var activationState = $('#activate_switch').prop('checked');
+		var activationState = $('#activate_switch').prop('checked');
 
-			// set new value in chrome storage
-			chrome.storage.sync.set({'activated': activationState});
-
-		});
+		// set new value in chrome storage
+		chrome.storage.sync.set({'activated': activationState});
 	});
 });
