@@ -6,6 +6,8 @@ has control over changing the DOM, but cant use chrome apis
 // tell event js to highlight icon when on correct page
 chrome.runtime.sendMessage({todo: "showPageAction"});
 
+// tell event js to tell us the initial state of activation
+chrome.runtime.sendMessage({todo: "initialLoad"});
 
 /** 
  * Inject blocker html before the comments html
@@ -13,11 +15,19 @@ chrome.runtime.sendMessage({todo: "showPageAction"});
  * @param targetPost - an object containing the target post element
  * @param visibility - Boolean, whether the inject HTML is displayed or not
  */
-function injectBlock(targetPost) {
+function injectBlock(targetPost, visibility) {
 	//TODO determine which image/text to use based on response from API?
 	// construct programatically instead? add id attribute??
-	var blocker_html = `
-	<div class="bg_filler">
+	var blocker_html1 = `
+	<div class="bg_filler" style="display: `
+	// set visibility of block
+	if (visibility) {
+		blocker_html1 += 'block';
+	} else {
+		blocker_html1 += 'none';
+	}
+
+	var blocker_html2 = `;">
 		<div class="content_houser">
 			<img class="block_img" src="https://i.imgur.com/zPuiLgy.png" alt="Blocked">
 			<p class="block_txt">
@@ -39,7 +49,7 @@ function injectBlock(targetPost) {
 	// inject html before comments div
 	// TODO make it insert after profile head instead of before comments? not every post has comments (reposts are like 2 posts), but every post does have profile images
 	var mark = targetPost.children(':first-child').children(':first-child').children(':first-child').next().children(':first-child').next();
-	$(blocker_html).insertBefore(mark);
+	$(blocker_html1.concat(blocker_html2)).insertBefore(mark);
 }
 
 /** 
@@ -153,8 +163,8 @@ $(function() {
 				if (activated) {
 					// hide post contents and inject blocky notice
 					toggleContents($(this), false);
-					injectBlock($(this));
 				}
+				injectBlock($(this), activated);
 
 				// save post as blocked
 				//TODO unecessary???
