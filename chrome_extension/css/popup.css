@@ -5,6 +5,7 @@
   display: inline-block;
   width: 30px;
   height: 17px;
+  float: right;
 }
 
 .switch input { 
@@ -64,4 +65,13 @@ input:checked + .slider:before {
 #header_icon {
 	height: 48px;
 	width: 225px;
+}
+
+.divider {
+  color: gray;
+  text-align: center;
+}
+
+.text-container {
+  padding: 5px;
 }

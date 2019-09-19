@@ -10,7 +10,8 @@
 .block_txt {
 	font-size: 24px;
 	font-family: sans-serif;
-	padding: 60px 0;
+	padding: 40px 0;
+	padding-right: 30px;
 }
 
 .read_btn {
