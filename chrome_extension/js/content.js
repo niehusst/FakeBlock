@@ -109,28 +109,74 @@ function unblockAllPosts() {
  * @param visibility - Boolean, whether the post contents are displayed or not
  */
 function toggleContents(targetPost, visibility) {
-	// remove post text (set display='none')
-	targetPost.find('div[data-testid="post_message"]').toggle(visibility); // toggle true to bring back
-	// remove post images
+	// post text 
+	targetPost.find('div[data-testid="post_message"]').toggle(visibility);
+	// post images
 	targetPost.find('a[data-render-location="newsstand"]').toggle(visibility);
-	// remove post videos
+	// post videos
 	targetPost.find('div.mtm').toggle(visibility);
 }
 
+
+/**
+ * Retrieve text contents of targetPost, if any. Returns empty string when
+ * targetPost contains no text.
+ *
+ * @param targetPost - a jQuery object containing the post to fetch text from
+ * @return - String, the text contents of the post, or empty string
+ */
+function getPostText(targetPost) {
+	var pElem = targetPost.find('p');
+	// ensure we found anything
+	if (pElem.length) {
+		return String(pElem.text());
+	} else {
+		return '';
+	}
+}
+
+/**
+ * Retrieve URL of the image in targetPost, if any. Returns empty string when
+ * targetPost contains no image.
+ *
+ * @param targetPost - a jQuery object containing the post to fetch image URL from
+ * @return - String, the URL of the post image, or empty string
+ */
+function getPostUrl(targetPost) {
+	var imgElem = targetPost.find('a[data-render-location="newsstand"]').find('img');
+	// ensure we found anything
+	if (imgElem.length) {
+		return String(imgElem.attr('href'));
+	} else {
+		return '';
+	}
+}
+
 /** 
- * Determine if a post is fake news or not by calling APIs
+ * Determine if a post is fake news or not by calling Google && FakeBlock APIs
  *
  * @param targetPost - an object containing the target post element
  * @return - Boolean, TODO: change this to include information about which tool determined fake?
  */
 function isFakeNews(targetPost) {
+	// TODO: extract text from <p> and from image using OCR
+
+	var imgUrl = getPostUrl(targetPost);
+	var postImgText = '';
+	var postText = getPostText(targetPost);
+
+	if (imgUrl) {
+		postImgText = Tesseract.recognize(imgUrl).then(function(result){ return result.text; });
+	}
+	console.log(postText);
+	console.log(postImgText);
+
 	//TODO: call APIs
 	return Math.round(Math.random());
 }
 
 
-//TODO: is it ok that this is just true by default to start with?
-// what about when chrome storage has saved false from prev session???
+// global that holds the activation state of the plugin. Is set via messages from events.js
 var activated = true; 
 
 // catch runtime messages about activation state changes
