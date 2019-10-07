@@ -156,22 +156,15 @@ function getPostUrl(targetPost) {
  * Determine if a post is fake news or not by calling Google && FakeBlock APIs
  *
  * @param targetPost - an object containing the target post element
- * @return - Boolean, TODO: change this to include information about which tool determined fake?
+ * @return - Boolean, TODO: change this to include information about probability of being fake?
  */
 function isFakeNews(targetPost) {
-	// TODO: extract text from <p> and from image using OCR
-
 	var imgUrl = getPostUrl(targetPost);
-	var postImgText = '';
 	var postText = getPostText(targetPost);
 
-	if (imgUrl) {
-		postImgText = Tesseract.recognize(imgUrl).then(function(result){ return result.text; });
-	}
 	console.log(postText);
-	console.log(postImgText);
 
-	//TODO: call APIs
+	//TODO: call custom is-fake API
 	return Math.round(Math.random());
 }
 
