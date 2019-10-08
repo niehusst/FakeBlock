@@ -1,4 +1,7 @@
-tesseract 4 (homebrew)
+(homebrew)
+tesseract 4 
 
-cld2-cffi (pip)
+(pip)
+cld2-cffi 
 opencv-python 
+django==2.2.6
