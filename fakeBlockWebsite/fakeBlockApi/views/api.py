@@ -1,10 +1,6 @@
 from django.http import JsonResponse
-#from rest_framework.reverse import reverse
-#from django.views.decorators.csrf import csrf_exempt
-from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.views import APIView
-from django.views import View
-
+from common.ocr.memeocr import MemeOCR
 
 # URL /api/fake
 class FakeNewsDetectorApi(APIView):
@@ -36,9 +32,17 @@ class FakeNewsDetectorApi(APIView):
 		"""
 		post_text = request.data['post_text'] if 'post_text' in request.data else None
 		image_url = request.data['image_url'] if 'image_url' in request.data else None
+		image_text = None
 
-		#TODO evaluate
+		# perform OCR on image, if there is one (TODO: more efficient way to do this? avoid rebuilding object every time?)
+		if image_url:
+			ocr = MemeOCR()
+			text_lines = ocr.recognize(image_url)
+			image_text = ' '.join(text_lines)
 
+		#TODO: debug
+		print(post_text)
+		print(image_text)
 
 		result = {'fake': False, 'determinator': 'newsApi', 'probability': 1.00} 
 		return JsonResponse(result)
