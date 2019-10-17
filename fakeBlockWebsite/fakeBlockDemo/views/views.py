@@ -9,7 +9,14 @@ from rest_framework.decorators import api_view
 
 
 # URL /
-@api_view(['GET'])
-def demo_index_page(request):
-	print(type(request))
-	return TemplateResponse(request, 'home.html', {})
+class DemoIndex(View):
+
+	def get(self, request):
+		"""
+		Return the HTML template for the demo page.
+
+		@param request - a rest_framework.request.Request object. There are
+						no body parameters.
+		@return - a TemplateResponse object that loads the index HTML template
+		"""
+		return TemplateResponse(request, 'home.html', {})
