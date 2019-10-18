@@ -30,11 +30,13 @@ import sys
 import os
 import re
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageFile
 import requests
 from io import BytesIO
 import cld2
 import pytesseract
+
+ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 #TODO: make sure the TESSDATA_PREFIX environment variable is set so meme language can be found
 class MemeOCR:
@@ -43,11 +45,20 @@ class MemeOCR:
         self._tmp_image = None
 
     def recognize(self, url):
+        """
+        Performs OCR on the image located at `url` and returns a list of the lines
+        of text located in the image.
+
+        @param url - string, url to an image address
+        @return - python list of strings, each string is a line of legible text in the
+                    image that was located at `url`
+        """
         txt = None
         self._get_image_from_url(url)
+        if not self._tmp_image:
+            return []
         self._thresh_words(self._tmp_image)
         txt = self._exec_tesseract()
-        print("txt is:  {}".format(txt))
         self._delete_tmp_files()
         return self._filter_response(txt)
 
@@ -61,13 +72,14 @@ class MemeOCR:
         """
         response = requests.get(url)
         byteio = BytesIO(response.content)
-        self._tmp_image = Image.open(byteio)
-        #convert to rgb to eliminate possible alpha channel
-        self._tmp_image = self._tmp_image.convert('RGB')
+        try:
+            self._tmp_image = Image.open(byteio)
+            # convert to rgb to eliminate possible alpha channel
+            self._tmp_image = self._tmp_image.convert('RGB')
+        except OSError as malformed_img:
+            print('Error reading image: {}'.format(malformed_img)) #TODO logging???
 
     def _thresh_words(self, img):
-        if not img:
-            return
         img = np.array(img)
 
         # threshold all pixels above _white_thresh to white, others to black
@@ -95,11 +107,11 @@ class MemeOCR:
         @return legible_lines - list, contains only the english legible
                             elements of `txt`
         """
+        #TODO: sometimes doesnt have reliable result? e.g. 'BLOG TWICE A WEEK' isn't recognised as english or reliable
         legible_lines = []
         if txt:
             blocks = re.split(r'\n\n', txt)
             lines = [re.sub(r'\s+', ' ', block) for block in blocks if block.strip()]
-            print("in memeocer, raw:  {}".format(lines)) #TODO debug
             for line in lines:
                 reliable, numBytes, details = cld2.detect(line)
                 lang = details[0][0]
