@@ -140,7 +140,7 @@ function getPostText(targetPost) {
  * targetPost contains no image.
  *
  * @param targetPost - a jQuery object containing the post to fetch image URL from
- * @return - String, the URL of the post image, or empty string
+ * @return - String, the src URL of the post image, or empty string
  */
 function getPostUrl(targetPost) {
 	var imgElem = targetPost.find('a[data-render-location="newsstand"]').find('img');
@@ -148,7 +148,14 @@ function getPostUrl(targetPost) {
 	if (imgElem.length) {
 		return String(imgElem.prop("src"));
 	} else {
-		return '';
+		// no post image element, try to find story attachement image
+		var storyImgElem = targetPost.find('div.fbStoryAttachmentImage').find('img');
+		if (storyImgElem.length) {
+			return String(storyImgElem.prop("src"));
+		} else {
+			// probs not any image in post
+			return '';
+		}
 	}
 }
 
@@ -161,6 +168,9 @@ function getPostUrl(targetPost) {
 function isFakeNews(targetPost) {
 	var imgUrl = getPostUrl(targetPost);
 	var postText = getPostText(targetPost);
+
+	console.log(postText);
+	console.log(imgUrl); //TODO debug
 
 	//TODO: call custom is-fake API
 	return Math.round(Math.random());
