@@ -146,7 +146,7 @@ function getPostUrl(targetPost) {
 	var imgElem = targetPost.find('a[data-render-location="newsstand"]').find('img');
 	// ensure we found anything
 	if (imgElem.length) {
-		return String(imgElem.attr('href'));
+		return String(imgElem.prop("src"));
 	} else {
 		return '';
 	}
@@ -161,8 +161,6 @@ function getPostUrl(targetPost) {
 function isFakeNews(targetPost) {
 	var imgUrl = getPostUrl(targetPost);
 	var postText = getPostText(targetPost);
-
-	console.log(postText);
 
 	//TODO: call custom is-fake API
 	return Math.round(Math.random());

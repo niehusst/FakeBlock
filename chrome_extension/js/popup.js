@@ -1,6 +1,6 @@
 //popup window js
 $(function() {
-	//TODO popup window isn't always available????
+	//TODO popup window isn't always available???? maybe replace popup with options page (but that means more front end. bleh.)
 	
 	// load persisting activation setting from chrome storage into popup html
 	chrome.storage.sync.get(['activated', 'notFirstLoad'], function(state) {
