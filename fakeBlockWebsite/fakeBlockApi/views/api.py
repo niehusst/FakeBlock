@@ -1,11 +1,11 @@
-from django.http import JsonResponse
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from common.ocr.imageocr import ImageOCR
 
 # URL /api/fake
 class FakeNewsDetectorApi(APIView):
 
-	def get(self, request):
+	def post(self, request):
 		"""
 		Decides if data provided in request body parameters contain fake news
 		or not. If bost post_text and a image_url are provided, they will be
@@ -24,7 +24,7 @@ class FakeNewsDetectorApi(APIView):
 				- fake: boolean, whether overall post was determined to
 							contain fake news.
 				- determinator: string, what level of the API AI made the
-							final judgement for `isfake`
+							final judgement for `fake`
 							possible values=['factApi', 'neuralNet']
 				- probability: float, the certainty of the neural net's 
 							prediction if `determinator` is 'neuralNet'
@@ -45,4 +45,5 @@ class FakeNewsDetectorApi(APIView):
 		print(image_text)
 
 		result = {'fake': False, 'determinator': 'newsApi', 'probability': 1.00} 
-		return JsonResponse(result)
+		return Response(result)
+

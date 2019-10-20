@@ -59,7 +59,6 @@ class ImageOCR:
             return []
         self._thresh_words(self._tmp_image)
         txt = self._exec_tesseract()
-        print(txt) #TODO debug
         self._delete_tmp_files()
         return self._filter_response(txt)
 
