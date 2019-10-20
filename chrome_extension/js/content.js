@@ -167,10 +167,7 @@ function getPostUrl(targetPost) {
  */
 function isFakeNews(targetPost) {
 	var imgUrl = getPostUrl(targetPost);
-	var postText = getPostText(targetPost);
-
-	console.log(postText);
-	console.log(imgUrl); //TODO debug
+	var postText = getPostText(targetPost); //TODO have this be able to find external news link text
 
 	//TODO: call custom is-fake API
 	return Math.round(Math.random());

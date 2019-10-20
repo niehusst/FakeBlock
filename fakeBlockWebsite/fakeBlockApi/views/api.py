@@ -1,6 +1,6 @@
 from django.http import JsonResponse
 from rest_framework.views import APIView
-from common.ocr.memeocr import MemeOCR
+from common.ocr.imageocr import ImageOCR
 
 # URL /api/fake
 class FakeNewsDetectorApi(APIView):
@@ -36,7 +36,7 @@ class FakeNewsDetectorApi(APIView):
 
 		# perform OCR on image, if there is one (TODO: more efficient way to do this? avoid rebuilding object every time?)
 		if image_url:
-			ocr = MemeOCR()
+			ocr = ImageOCR()
 			text_lines = ocr.recognize(image_url)
 			image_text = ' '.join(text_lines)
 
