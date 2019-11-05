@@ -34,7 +34,8 @@ class FakeNewsDetectorApi(APIView):
 		image_url = request.data['image_url'] if 'image_url' in request.data else None
 		image_text = None
 
-		# perform OCR on image, if there is one (TODO: more efficient way to do this? avoid rebuilding object every time?)
+		# perform OCR on image, if there is one 
+		#(TODO: more efficient way to do this? avoid rebuilding object every time? test latency w/ and w/o OCR. Option to turn off OCR?)
 		if image_url:
 			ocr = ImageOCR()
 			text_lines = ocr.recognize(image_url)
@@ -44,6 +45,32 @@ class FakeNewsDetectorApi(APIView):
 		print(post_text)
 		print(image_text)
 
-		result = {'fake': False, 'determinator': 'newsApi', 'probability': 1.00} 
-		return Response(result)
+		result = {'fake': True, 'determinator': 'newsApi', 'probability': 1.00} 
+		cors_headers = {'Access-Control-Allow-Origin': "*"} #TODO try making own middleware since django cors does nothing???
+		#TODO handle preflight requests somehow???
+		return Response(data=result, headers=cors_headers)
+
+
+	def options(self, request):
+		"""
+		Method for handling CORS preflight requests. This is a public API, so
+		all origins are allowed.
+		"""
+		headers = {
+			'Access-Control-Allow-Origin': "*",
+			'Access-Control-Allow-Methods': ["POST", "OPTIONS"], #TODO  OPTIONS ??
+			'Access-Control-Allow-Headers': [
+			    'accept',
+			    'accept-encoding',
+			    'authorization',
+			    'content-type',
+			    'dnt',
+			    'origin',
+			    'user-agent',
+			    'x-csrftoken',
+			    'x-requested-with',
+			],
+			'Content-Type': "application/json",
+		}
+		return Response(data={}, headers=headers)
 

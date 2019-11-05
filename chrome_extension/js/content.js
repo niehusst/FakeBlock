@@ -169,28 +169,16 @@ function isFakeNews(targetPost) {
 	var imgUrl = getPostUrl(targetPost);
 	var postText = getPostText(targetPost); //TODO have this be able to find external news link text
 
-	//TODO: call custom is-fake API
-	var isFake = true; //Math.round(Math.random());
-	const postData = {
-		headers: {
-			'content-type': "application/json"
-		},
-		body: {
-			post_text: postText,
-			image_url: imgUrl
-		},
-		method: "POST",
-		mode: "no-cors"
-	};
-
-	fetch('http://127.0.0.1:8000/api/fake', postData)
-	.then(response => response.json())
-	.then(data => {
-		console.log(data);
-		isFake = true;
-	})
-	.catch(error => isFake = false);
-	return isFake;
+	//TODO: tell events script to make API call
+	var isFake = false; //Math.round(Math.random());
+	chrome.runtime.sendMessage(
+		{todo: "apiCall", text: postText, url: imgUrl},
+		response => {
+			console.log(response);
+			isFake = response["fake"];
+			return isFake;
+		});
+	//return isFake;
 }
 
 
@@ -202,7 +190,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	activated = (request.todo === "blockPosts");
 	if (!activated) {
 		unblockAllPosts();
-	} else { //block posts
+	} else {
 		reblockAllFakePosts();
 	}
 });
@@ -212,7 +200,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 $(function() {
 	var visitedPosts = {};
 	
-	// run a 'live query' on each post as it's added to DOM
+	// act on each post as it's added to DOM
 	// TODO: sometimes misses first post?
 	$(document).on('DOMNodeInserted', 'div[data-testid="fbfeed_story"]', function() {
 		// dont run on posts that have already been examined
@@ -222,8 +210,6 @@ $(function() {
 			visitedPosts[$(this).attr('id')] = true;
 			
 			if (isFakeNews($(this))) {
-
-				// only hide contents of posts if activated
 				if (activated) {
 					// hide post contents and inject blocky notice
 					toggleContents($(this), false);
@@ -231,7 +217,6 @@ $(function() {
 				injectBlock($(this), activated);
 
 				// save post as blocked
-				//TODO unecessary???
 				blockedPosts.push($(this).attr('id'));
 			}
 		}
