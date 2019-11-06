@@ -175,10 +175,19 @@ function isFakeNews(targetPost) {
 		{todo: "apiCall", text: postText, url: imgUrl},
 		response => {
 			console.log(response);
-			isFake = response["fake"];
-			return isFake;
+			isFake = response["fake"]; //TODO make able to run asynch. call toggle post from here
+			
+			if (isFake) {
+				if (activated) {
+					// hide post contents and inject blocky notice
+					toggleContents(targetPost, false);
+				}
+				injectBlock(targetPost, activated); //TODO pass in other info from response?
+
+				// save post as blocked
+				blockedPosts.push(targetPost.attr('id'));
+			}
 		});
-	//return isFake;
 }
 
 
@@ -196,7 +205,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 });
 
 
-// take action on all facebook posts
+// take action on each facebook post once page loads
 $(function() {
 	var visitedPosts = {};
 	
@@ -209,21 +218,12 @@ $(function() {
 			// mark post as looked at
 			visitedPosts[$(this).attr('id')] = true;
 			
-			if (isFakeNews($(this))) {
-				if (activated) {
-					// hide post contents and inject blocky notice
-					toggleContents($(this), false);
-				}
-				injectBlock($(this), activated);
-
-				// save post as blocked
-				blockedPosts.push($(this).attr('id'));
-			}
+			isFakeNews($(this)); //TODO rename?
 		}
 	});
 
 	// set up click event listening for blocked window buttons
-	$(document).on('click', '.read_btn', function() {
+	$(document).on('click', '.read_btn', function() { //TODO needs moving to the asynch callback?
 		closeBlock($(this));
 	});
 });
