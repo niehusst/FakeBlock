@@ -8,3 +8,4 @@ djangorestframework==3.9.2
 pytesseract
 pillow
 numpy
+django-cors-headers
