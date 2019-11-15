@@ -9,6 +9,5 @@ pytesseract
 pillow
 numpy
 django-cors-headers
-requests
-//google-cloud-language        #this and the google fact-check API require API keys
+google-api-python-client        #this requires an API key to use
 nltk
