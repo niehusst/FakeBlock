@@ -1,18 +1,45 @@
-import requests
+import nltk
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+from googleapiclient.discovery import build
 
-from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY #TODO does this import work???
+from common.common import get_logger
+from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY #TODO does this import work??
+
+err_logger = get_logger(__name__)
 
 class FakeDeterminator(object):
-    def __init__(self):
-        #TODO hold singleton instance of loaded dnn model
-        #TODO only instantiate this object 1 time
-        self.google_api_get_fact_check = "https://factchecktools.googleapis.com/v1alpha1/claims:search"
+    """
+    An object with methods for determining if text is likely to contain fake
+    news or not. Requires instantiation for setup of various helpers.
+    """
+
+    class __DeterminatorSingleton(object):
+        """
+        Singleton pattern to save time constructing the static class
+        FakeDeterminator; only do the heavy lifting of instantiating
+        all the fields one time.
+        """
+        def __init__(self):
+            #TODO hold singleton instance of loaded dnn model
+            #download resources for sentiment analysis
+            nltk.download('vader_lexicon') 
+            nltk.download('punkt')
+            nltk.download('averaged_perceptron_tagger')
+            self.sentiment_analyze = SentimentIntensityAnalyzer()
+
+    __instance = None
+    def __new__(cls):
+        if not FakeDeterminator.__instance:
+            FakeDeterminator.__instance = FakeDeterminator.__DeterminatorSingleton()
+        return FakeDeterminator.__instance
 
     def evaluate_post(self, post_txt=None, image_txt=None):
         """
         Determine if a Facebook post (defined as post text and/or image)
         likely contains fake news or not.
 
+        @param post_txt - String, text to examine the legitimacy of
+        @return - Boolean
         """
         txt_fake = image_fake = False
 
@@ -32,59 +59,71 @@ class FakeDeterminator(object):
         @return - Boolean, indicating if text is likely to be fake (True) or 
                   legit (False)
         """
-        #perform more reliable fact check first
-        if self._fact_check_determinator(text):
+        #perform more(?) reliable fact check first
+        api_check = self._fact_check_determinator(text)
+        if api_check == 1:
             return True
-        if self._predict_determinator(text):
-            return True
-        return False
+        elif api_check == 0:
+            return False
+        else:
+            # -1 indicates no matching API response for text
+            if self._predict_determinator(text):
+                return True #TODO more info???
+            else:
+                return False
 
     def _fact_check_determinator(self, text):
         """
         maybe we try to do some NLP or response matching with the API results (of a more generalized search?)
-
         #TODO: determine if this tool ultimately hurts or helps performance stats at end (same with OCR? still 2 slow. Unless Heroku server is super fast)
 
+        @param text - String, the query text to search for in the Google
+                    Fact Check API
         @return - Integer, -1 for No match found, 0 for False, 1 for True
         """
-        qparams = {
-            'query': text,
-            'pageSize': 30,
-            'offset': 0,
-            'key': GOOGLE_FACT_API_KEY, #TODO is this where this should be?
-        }
-        resp = requests.get(self.google_api_get_fact_check, params=qparams)
+        try:
+            factCheckService = build("factchecktools", "v1alpha1", developerKey=GOOGLE_FACT_API_KEY)
+            request = factCheckService.claims().search(query=text, pageSize=30, offset=0)
+            response = request.execute()
+        except HttpError as err:
+            # cant access API right now! return no match
+            err_logger.error("Error accessing Google Fact API:  {}".format(err))
+            return -1
 
-        #pick response from claims array that represents input (if there is one)
+        # NLP POS tagging. Parse all nouns, verbs, and adjectives out of text
+        tokens = nltk.word_tokenize(text)
+        desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
+        crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
+
+        # pick response from claims array that represents input (if there is one)
         for possible_match in resp['claims']:
-            if self._matches(text, possible_match['text'], 0.7):
+            if self._matches(crit_words, possible_match['text'], 0.7):
                 #evaluate from textualRating the truthyness of the claim
                 return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
         return -1
 
-    def _matches(self, base_text, candidate, threshold):
+    def _matches(self, base_set, candidate, threshold):
         """
-        Determines if threshold% or more of base_text matches the candidate.
+        Determines if threshold% or more of base_set matches the candidate.
+        Base set is a list of words that are 'important'. 
+        (Important words only in order to reduce false buffer percent that 
+        simple articles etc. would provide)
 
-        @param base_text - String, the text we want to maximize the 
+        @param base_set - List of Strings, the text we want to find the 
                             matching percentage of.
         @param candidate - String, the text that we are testing for a match
                             against base_text.
         @param threshold - Float, number between 0 and 1.0 [inclusive] that
-                            is the percentage of [important] words in base_text
+                            is the percentage of words in base_set
                             that must be present in candidate in order to 
                             return True.
-                            (Important words only in order to reduce false 
-                            buffer percent that simple articles would provide)
         @return - Boolean, True if threshold is met, else False
         """
+        #TODO: this method does not deal with negated sentences (e.g. "world is flat" will 100% match "world is not flat":True, returning wrong result)
         threshold = min(max(0.0, threshold), 1.0)
-
-        #TODO NLP POS tagging
-        base_set = nlp.important_words(base_text) #use Part Of Speech tagging to get nouns+verbs+adjectives
-        candidate_set = set(candidate.split(" "))
-
+        candidate_set = set(nltk.word_tokenize(candidate))
         count = 0
+
         for word in base_set:
             if word in candidate_set:
                 count += 1
@@ -108,6 +147,16 @@ class FakeDeterminator(object):
         #Pants on Fire
         #3 pinnochios
         #Not True
+        ss = FakeDeterminator.__instance.sentiment_analyze.polarity_scores(fact_rating) 
+        # if compound is positive, it is likely to be true
+        if ss['compound'] > 0:
+            return 1
+        elif ss['compound'] < 0:
+            return 0
+        else:
+            #special parsing???
+            pass
+        # compound is often 0 for negative fact_rating (e.g. False -> 0 compound score)
         return 1
 """
 {
