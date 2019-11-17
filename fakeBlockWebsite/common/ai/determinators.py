@@ -2,36 +2,25 @@ import nltk
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 
-from common.common import get_logger
+from common.common import get_logger, Singleton
 from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY #TODO does this import work??
 
 err_logger = get_logger(__name__)
 
-class FakeDeterminator(object):
+class FakeDeterminator(object, metaclass=Singleton):
     """
     An object with methods for determining if text is likely to contain fake
     news or not. Requires instantiation for setup of various helpers.
     """
 
-    class __DeterminatorSingleton(object):
-        """
-        Singleton pattern to save time constructing the static class
-        FakeDeterminator; only do the heavy lifting of instantiating
-        all the fields one time.
-        """
-        def __init__(self):
-            #TODO hold singleton instance of loaded dnn model
-            #download resources for sentiment analysis
-            nltk.download('vader_lexicon') 
-            nltk.download('punkt')
-            nltk.download('averaged_perceptron_tagger')
-            self.sentiment_analyze = SentimentIntensityAnalyzer()
-
-    __instance = None
-    def __new__(cls):
-        if not FakeDeterminator.__instance:
-            FakeDeterminator.__instance = FakeDeterminator.__DeterminatorSingleton()
-        return FakeDeterminator.__instance
+    def __init__(self):
+        #TODO hold singleton instance of loaded dnn model
+        #download resources for sentiment analysis
+        nltk.download('vader_lexicon') 
+        nltk.download('punkt')
+        nltk.download('averaged_perceptron_tagger')
+        self.sentiment_analyze = SentimentIntensityAnalyzer()
+        print("creating singleton")
 
     def evaluate_post(self, post_txt=None, image_txt=None):
         """
@@ -50,7 +39,7 @@ class FakeDeterminator(object):
         
         return txt_fake or image_fake
 
-    def _dertermine(self, text):#TODO: return other info about probabilty and which determinator did it?
+    def _determine(self, text):#TODO: return other info about probabilty and which determinator did it?
         """
         Determines (using Google Fact Check API and a custom neural net) if
         the input text is likely to be fake news.
@@ -90,16 +79,17 @@ class FakeDeterminator(object):
             err_logger.error("Error accessing Google Fact API:  {}".format(err))
             return -1
 
-        # NLP POS tagging. Parse all nouns, verbs, and adjectives out of text
-        tokens = nltk.word_tokenize(text)
-        desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
-        crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
+        if response:
+            # NLP POS tagging. Parse all nouns, verbs, and adjectives out of text
+            tokens = nltk.word_tokenize(text)
+            desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
+            crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
 
-        # pick response from claims array that represents input (if there is one)
-        for possible_match in resp['claims']:
-            if self._matches(crit_words, possible_match['text'], 0.7):
-                #evaluate from textualRating the truthyness of the claim
-                return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
+            # pick response from claims array that represents input (if there is one)
+            for possible_match in response['claims']:
+                if self._matches(crit_words, possible_match['text'], 0.7):
+                    #evaluate from textualRating the truthyness of the claim
+                    return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
         return -1
 
     def _matches(self, base_set, candidate, threshold):
@@ -158,6 +148,15 @@ class FakeDeterminator(object):
             pass
         # compound is often 0 for negative fact_rating (e.g. False -> 0 compound score)
         return 1
+
+    def _predict_determinator(self, text):
+        """
+        Use a neural net to make a prediction
+        """
+        #TODO use NLTK?
+        pass
+
+
 """
 {
   "claims": [
@@ -183,10 +182,3 @@ class FakeDeterminator(object):
 }
 
 """
-
-    def _predict_determinator(self, text):
-        """
-        Use a neural net to make a prediction
-        """
-        #TODO use NLTK?
-        pass
