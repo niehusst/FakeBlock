@@ -1,6 +1,9 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
 from common.ocr.imageocr import ImageOCR
+from common.ai.determinators import FakeDeterminator
+
 
 # URL /api/fake
 class FakeNewsDetectorApi(APIView):
@@ -36,16 +39,18 @@ class FakeNewsDetectorApi(APIView):
 
 		# perform OCR on image, if there is one  (This can take upwards of 30 seconds!)
 		#(TODO: more efficient way to do this? avoid rebuilding object every time? test latency w/ and w/o OCR. Option to turn off OCR?)
-		if image_url:
-			ocr = ImageOCR()
-			text_lines = ocr.recognize(image_url)
-			image_text = ' '.join(text_lines)
-
+		#if image_url:
+		#	ocr = ImageOCR()
+		#	text_lines = ocr.recognize(image_url)
+		#	image_text = ' '.join(text_lines)
+		determinator = FakeDeterminator()
 		#TODO: debug
-		print(post_text)
-		print(image_text)
+		#print(post_text)
+		#print(image_text)
+		print("evaluating..")
+		evaluation = determinator.evaluate_post(post_text)
 
-		result = {'fake': True, 'determinator': 'newsApi', 'probability': 1.00} 
+		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} 
 		return Response(data=result)
 
 
