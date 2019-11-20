@@ -9,6 +9,15 @@ chrome.runtime.sendMessage({todo: "showPageAction"});
 // tell event js to tell us the initial state of activation
 chrome.runtime.sendMessage({todo: "initialLoad"});
 
+// global that holds the activation state of the plugin. Is set via messages from events.js
+var activated = true; 
+
+/*
+array of IDs of blocked posts; only need to iterate list activating/deactivating
+each element when the extension is activated/deactivated
+*/
+var blockedPosts = [];
+
 /** 
  * Inject blocker html before the comments html
  *
@@ -69,12 +78,6 @@ function closeBlock(target) {
     toggleContents($(target).parent().parent().parent(), true);
 }
 
-
-/*
-array of IDs of blocked posts; only need to iterate list activating/deactivating
-each element when the extension is activated/deactivated
-*/
-var blockedPosts = [];
 
 /**
  * For each post marked as blocked, set the display CSS atribute to block,
@@ -160,29 +163,27 @@ function getPostUrl(targetPost) {
 }
 
 /** 
- * Determine if a post is fake news or not by calling Google && FakeBlock APIs
+ * Determine if a post is fake news or not by calling FakeBlock API. The 
+ * response is asynchronously handled by a Promise; the target post is blocked
+ * or not once the API responds.
  *
  * @param targetPost - an object containing the target post element
- * @return - Boolean, TODO: change this to include information about probability of being fake?
+ * @return - None, run for the side-effects
  */
 function isFakeNews(targetPost) {
-	var imgUrl = getPostUrl(targetPost);
+	var imgUrl = getPostUrl(targetPost); //TODO chop out
 	var postText = getPostText(targetPost); //TODO have this be able to find external news link text
 
-	//TODO: tell events script to make API call
-	var isFake = false; //Math.round(Math.random());
+	//tell events script to make API call
 	chrome.runtime.sendMessage(
 		{todo: "apiCall", text: postText, url: imgUrl},
 		response => {
-			console.log(response);
-			isFake = response["fake"]; //TODO make able to run asynch. call toggle post from here
-			
-			if (isFake) {
+			if (response["fake"]) {
 				if (activated) {
 					// hide post contents and inject blocky notice
 					toggleContents(targetPost, false);
 				}
-				injectBlock(targetPost, activated); //TODO pass in other info from response?
+				injectBlock(targetPost, activated); //TODO pass in other info from response? diff UI for google block? show percent prob?
 
 				// save post as blocked
 				blockedPosts.push(targetPost.attr('id'));
@@ -190,9 +191,6 @@ function isFakeNews(targetPost) {
 		});
 }
 
-
-// global that holds the activation state of the plugin. Is set via messages from events.js
-var activated = true; 
 
 // catch runtime messages about activation state changes
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {

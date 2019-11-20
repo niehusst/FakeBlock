@@ -3,7 +3,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 
 from common.common import get_logger, Singleton
-from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY #TODO does this import work??
+from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY 
 
 err_logger = get_logger(__name__)
 
@@ -31,11 +31,10 @@ class FakeDeterminator(object, metaclass=Singleton):
         @return - Boolean
         """
         txt_fake = image_fake = False
-
         if post_txt:
             txt_fake = self._determine(post_txt)
         if image_txt:
-            image_fake = self._dtermine(image_txt) #TODO chop our image stuff
+            image_fake = self._dtermine(image_txt) #TODO chop out image stuff
         
         return txt_fake or image_fake
 
@@ -50,6 +49,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         """
         #perform more(?) reliable fact check first
         api_check = self._fact_check_determinator(text)
+        #TODO return more info here???
         if api_check == 1:
             return True
         elif api_check == 0:
@@ -57,7 +57,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         else:
             # -1 indicates no matching API response for text
             if self._predict_determinator(text):
-                return True #TODO more info???
+                return True 
             else:
                 return False
 
@@ -84,10 +84,10 @@ class FakeDeterminator(object, metaclass=Singleton):
             tokens = nltk.word_tokenize(text)
             desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
             crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
-
             # pick response from claims array that represents input (if there is one)
             for possible_match in response['claims']:
                 if self._matches(crit_words, possible_match['text'], 0.7):
+                    print('foudn a matach!')#TODO debgu
                     #evaluate from textualRating the truthyness of the claim
                     return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
         return -1
@@ -144,7 +144,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         elif ss['compound'] < 0:
             return 0
         else:
-            #special parsing???
+            #TODO special parsing???
             pass
         # compound is often 0 for negative fact_rating (e.g. False -> 0 compound score)
         return 1
@@ -153,7 +153,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         """
         Use a neural net to make a prediction
         """
-        #TODO use NLTK?
+        #TODO use NLTK for neural net? dense net?? look online what others do
         pass
 
 
