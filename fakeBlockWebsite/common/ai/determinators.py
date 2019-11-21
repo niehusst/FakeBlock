@@ -20,7 +20,6 @@ class FakeDeterminator(object, metaclass=Singleton):
         nltk.download('punkt')
         nltk.download('averaged_perceptron_tagger')
         self.sentiment_analyze = SentimentIntensityAnalyzer()
-        print("creating singleton")
 
     def evaluate_post(self, post_txt=None, image_txt=None):
         """
@@ -131,13 +130,7 @@ class FakeDeterminator(object, metaclass=Singleton):
                     if rating appears to be positive (or shows uncertainty)
         """
         #TODO use NLP sentiment analysis?? do some special case testing (i.e. when it's a 1/5 number rating)
-        #False
-        #Mostly False
-        #Spins the Facts
-        #Pants on Fire
-        #3 pinnochios
-        #Not True
-        ss = FakeDeterminator.__instance.sentiment_analyze.polarity_scores(fact_rating) 
+        ss = self.sentiment_analyze.polarity_scores(fact_rating) 
         # if compound is positive, it is likely to be true
         if ss['compound'] > 0:
             return 1

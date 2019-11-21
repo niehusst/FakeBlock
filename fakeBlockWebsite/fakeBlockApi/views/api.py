@@ -47,7 +47,6 @@ class FakeNewsDetectorApi(APIView):
 		#TODO: debug
 		#print(post_text)
 		#print(image_text)
-		print("evaluating..")
 		evaluation = determinator.evaluate_post(post_text)
 
 		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} 
