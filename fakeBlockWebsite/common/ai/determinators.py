@@ -86,7 +86,6 @@ class FakeDeterminator(object, metaclass=Singleton):
             # pick response from claims array that represents input (if there is one)
             for possible_match in response['claims']:
                 if self._matches(crit_words, possible_match['text'], 0.7):
-                    print('foudn a matach!')#TODO debgu
                     #evaluate from textualRating the truthyness of the claim
                     return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
         return -1
@@ -129,18 +128,65 @@ class FakeDeterminator(object, metaclass=Singleton):
         @return - Integer, 0 if fact_rating indicates a negative rating, 1
                     if rating appears to be positive (or shows uncertainty)
         """
-        #TODO use NLP sentiment analysis?? do some special case testing (i.e. when it's a 1/5 number rating)
-        ss = self.sentiment_analyze.polarity_scores(fact_rating) 
-        # if compound is positive, it is likely to be true
-        if ss['compound'] > 0:
+        # some gross hard coding stuff, but it is the most accurate
+        false_inputs = set([
+            "false",
+            "mostly false",
+            "spins the facts",
+            "pants on fire",
+            "not true",
+            "misleading",
+            "cherry picks",
+            "incorrect",
+            "decontextualized",
+            "this is misleading.",
+            "fake",
+            "this is exaggerated.",
+            "scam",
+            "miscaptioned",
+            "incorrect",
+            "unproven",
+            "exaggerates",
+            "inaccurate",
+            "not the whole story",
+        ])
+        true_inputs = set([
+            "true",
+            "mostly true",
+            "accurate",
+            "correct attribution",
+            "half True",
+            "maybe.",
+            "mixture",
+            "correct",
+            "mostly correct",
+            "reports heavily disputed",
+        ])
+
+        #check if fact_rating is in sets of known mappings
+        fact_rating = fact_rating.lower()
+        fact_rating = " ".join(fact_rating.split("_"))
+        if fact_rating in false_inputs:
+            return 0
+        if fact_rating in true_inputs:
             return 1
-        elif ss['compound'] < 0:
+
+        # not previously seen/recored human-readable to bool mapping
+        # use NLP sentiment analysis to try to figure it out
+        ss = self.sentiment_analyze.polarity_scores(fact_rating) 
+        if ss['compound'] < 0:
             return 0
         else:
-            #TODO special parsing???
-            pass
-        # compound is often 0 for negative fact_rating (e.g. False -> 0 compound score)
-        return 1
+            #try parsing for pinnochio rating 
+            rating = fact_rating.split(" ")
+            if len(rating) > 1 and rating[1] == "pinocchios":
+                return 0
+
+            # either it was a positive compound, indicating phrase was liekly
+            # true, or it was a neutral compound, which could indicate anything
+            # so we will return 1 on uncertainty to avoid blocking real news.
+            return 1
+        
 
     def _predict_determinator(self, text):
         """
