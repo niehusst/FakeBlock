@@ -149,6 +149,8 @@ class FakeDeterminator(object, metaclass=Singleton):
             "exaggerates",
             "inaccurate",
             "not the whole story",
+            "flawed reasoning",
+            "lacks context",
         ])
         true_inputs = set([
             "true",
@@ -171,7 +173,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         if fact_rating in true_inputs:
             return 1
 
-        # not previously seen/recored human-readable to bool mapping
+        # not previously in sets of common mappings
         # use NLP sentiment analysis to try to figure it out
         ss = self.sentiment_analyze.polarity_scores(fact_rating) 
         if ss['compound'] < 0:
