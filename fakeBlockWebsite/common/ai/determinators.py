@@ -70,25 +70,44 @@ class FakeDeterminator(object, metaclass=Singleton):
         @return - Integer, -1 for No match found, 0 for False, 1 for True
         """
         try:
+            #make request to google fact check API
             factCheckService = build("factchecktools", "v1alpha1", developerKey=GOOGLE_FACT_API_KEY)
             request = factCheckService.claims().search(query=text, pageSize=30, offset=0)
             response = request.execute()
         except HttpError as err:
             # cant access API right now! return no match
-            err_logger.error("Error accessing Google Fact API:  {}".format(err))
+            err_logger.error("Error while accessing Google Fact API:  {}".format(err))
             return -1
 
-        if response:
-            # NLP POS tagging. Parse all nouns, verbs, and adjectives out of text
-            tokens = nltk.word_tokenize(text)
-            desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
-            crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
-            # pick response from claims array that represents input (if there is one)
-            for possible_match in response['claims']:
-                if self._matches(crit_words, possible_match['text'], 0.7):
-                    #evaluate from textualRating the truthyness of the claim
-                    return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
+        if response and 'claims' in response:
+            return self._analyze_response(response, text)
         return -1
+
+    def _analyze_response(self, response, text):
+        """
+        Given an API response from the Google Fact Check API that contains a
+        list of claims to evaluate 'text' against, return whether text matches
+        any of the claims in 'response'
+
+        @param response - Dictionary, the complete response from the Google
+                    Fact Check API. Must include 'claims' key mapping to iterable
+        @param text - String, the query text to search for in the Google
+                    Fact Check API
+        @return - Integer, -1 for No match found, 0 for False, 1 for True
+        """
+        # NLP POS tagging. Parse all nouns, verbs, and adjectives out of text
+        tokens = nltk.word_tokenize(text)
+        desired_pos = set(['NN','NNS','NNP','NNPS','JJ','JJR','JJS','VB','VBG','VBN','VBP','VBZ'])
+        crit_words = [word[0] for word in nltk.pos_tag(tokens) if word[1] in desired_pos]
+
+        thresh = 0.6
+        # pick response from claims array that represents input (if there is one)
+        for possible_match in response['claims']:
+            if self._matches(crit_words, possible_match['text'], thresh):
+                #evaluate from textualRating the truthyness of the claim
+                return self._eval_truthyness(possible_match['claimReview'][0]['textualRating'])
+        return -1
+
 
     def _matches(self, base_set, candidate, threshold):
         """
