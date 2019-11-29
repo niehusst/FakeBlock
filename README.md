@@ -6,9 +6,10 @@ meticulously examines each post to determine its legitimacy before
 allowing it to be shown to the user.
 
 ## Author
-* [**Liam Niehus-Staab**](https://github.com/niehusst)
+* **Liam Niehus-Staab** - [niehusst](https://github.com/niehusst)
 
 ## Acknowledgements
-* Logo and images used were adjusted from stock images under Createive Commons and from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
-* [Imgur](https://imgur.com/) for free online image hosting
+* Custom logo and images were adjusted from stock images under Createive Commons and from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
+* [Imgur](https://imgur.com/) for free online image hosting for my logos
 * [Google fact checking API](https://developers.google.com/fact-check/tools/api/)
+* Tesseract model trained on english memes slightly modified from [johnlinp](https://github.com/johnlinp/meme-ocr)

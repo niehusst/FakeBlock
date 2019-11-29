@@ -9,6 +9,15 @@ chrome.runtime.sendMessage({todo: "showPageAction"});
 // tell event js to tell us the initial state of activation
 chrome.runtime.sendMessage({todo: "initialLoad"});
 
+// global that holds the activation state of the plugin. Is set via messages from events.js
+var activated = true; 
+
+/*
+array of IDs of blocked posts; only need to iterate list activating/deactivating
+each element when the extension is activated/deactivated
+*/
+var blockedPosts = [];
+
 /** 
  * Inject blocker html before the comments html
  *
@@ -70,12 +79,6 @@ function closeBlock(target) {
 }
 
 
-/*
-array of IDs of blocked posts; only need to iterate list activating/deactivating
-each element when the extension is activated/deactivated
-*/
-var blockedPosts = [];
-
 /**
  * For each post marked as blocked, set the display CSS atribute to block,
  * and hiding the post contents.
@@ -136,58 +139,71 @@ function getPostText(targetPost) {
 }
 
 /**
- * Retrieve URL of the image in targetPost, if any. Returns empty string when
- * targetPost contains no image.
+ * Retrieve the text from targetPost's news banner, if there is
+ * one present in targetPost (else empty string).
  *
- * @param targetPost - a jQuery object containing the post to fetch image URL from
- * @return - String, the URL of the post image, or empty string
+ * @param targetPost - a jQuery object, containing the HTML to search in
+ * @return - String, the contents of the news banner, or empty string
  */
-function getPostUrl(targetPost) {
-	var imgElem = targetPost.find('a[data-render-location="newsstand"]').find('img');
+function getNewsText(targetPost) {
+	var newsElem = targetPost.find('div.ellipsis');
 	// ensure we found anything
-	if (imgElem.length) {
-		return String(imgElem.attr('href'));
+	if (newsElem.length) {
+		return String(newsElem.parent().parent().next().children().children().text());
 	} else {
+		// no news banner in this post
 		return '';
 	}
 }
 
 /** 
- * Determine if a post is fake news or not by calling Google && FakeBlock APIs
+ * Determine if a post is fake news or not by calling FakeBlock API. The 
+ * response is asynchronously handled by a Promise; the target post saved into
+ * the array of blocked posts or not once the API responds with the 
+ * determination of the post's validity.
  *
- * @param targetPost - an object containing the target post element
- * @return - Boolean, TODO: change this to include information about probability of being fake?
+ * @param targetPost - a jQuery object containing the target post element
+ * @return - None, run for the side-effects
  */
 function isFakeNews(targetPost) {
-	var imgUrl = getPostUrl(targetPost);
-	var postText = getPostText(targetPost);
+	var newsText = getNewsText(targetPost); 
+	var postText = getPostText(targetPost); 
 
-	console.log(postText);
+	//tell events script to make API call
+	chrome.runtime.sendMessage(
+		{todo: "apiCall", text: postText, news: newsText},
+		response => {
+			// async handling of response
+			if (response["fake"]) {
+				if (activated) {
+					// hide post contents and inject blocky notice
+					toggleContents(targetPost, false);
+				}
+				injectBlock(targetPost, activated); //TODO pass in other info from response? diff UI for google block? show percent prob?
 
-	//TODO: call custom is-fake API
-	return Math.round(Math.random());
+				// save post as blocked
+				blockedPosts.push(targetPost.attr('id'));
+			}
+		});
 }
 
-
-// global that holds the activation state of the plugin. Is set via messages from events.js
-var activated = true; 
 
 // catch runtime messages about activation state changes
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	activated = (request.todo === "blockPosts");
 	if (!activated) {
 		unblockAllPosts();
-	} else { //block posts
+	} else {
 		reblockAllFakePosts();
 	}
 });
 
 
-// take action on all facebook posts
+// take action on each facebook post once page loads
 $(function() {
 	var visitedPosts = {};
 	
-	// run a 'live query' on each post as it's added to DOM
+	// act on each post as it's added to DOM
 	// TODO: sometimes misses first post?
 	$(document).on('DOMNodeInserted', 'div[data-testid="fbfeed_story"]', function() {
 		// dont run on posts that have already been examined
@@ -196,24 +212,12 @@ $(function() {
 			// mark post as looked at
 			visitedPosts[$(this).attr('id')] = true;
 			
-			if (isFakeNews($(this))) {
-
-				// only hide contents of posts if activated
-				if (activated) {
-					// hide post contents and inject blocky notice
-					toggleContents($(this), false);
-				}
-				injectBlock($(this), activated);
-
-				// save post as blocked
-				//TODO unecessary???
-				blockedPosts.push($(this).attr('id'));
-			}
+			isFakeNews($(this)); //TODO rename?
 		}
 	});
 
 	// set up click event listening for blocked window buttons
-	$(document).on('click', '.read_btn', function() {
+	$(document).on('click', '.read_btn', function() { //TODO needs moving to the asynch callback?
 		closeBlock($(this));
 	});
 });
