@@ -26,6 +26,12 @@ CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
 ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE 
 POSSIBILITY OF SUCH DAMAGE.
 """
+
+### example usage ###
+# ocr = ImageOCR()
+# text_lines = ocr.recognize(image_url)
+# image_text = ' '.join(text_lines)
+
 import sys
 import os
 import re
@@ -38,8 +44,11 @@ import pytesseract
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-#TODO: make sure the TESSDATA_PREFIX environment variable is set so meme language can be found
+#######   DEPRECATED IN USAGE DUE TO SLOWNESS   ########
+
 class ImageOCR:
+    #the TESSDATA_PREFIX environment variable must be set with path to
+    #tessdata dir so language files can be found
     def __init__(self):
         self._white_thresh = 240
         self._tmp_image = None

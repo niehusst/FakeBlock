@@ -21,21 +21,25 @@ class FakeDeterminator(object, metaclass=Singleton):
         nltk.download('averaged_perceptron_tagger')
         self.sentiment_analyze = SentimentIntensityAnalyzer()
 
-    def evaluate_post(self, post_txt=None, image_txt=None):
+    def evaluate_post(self, post_txt=None, news_txt=None):
         """
         Determine if a Facebook post (defined as post text and/or image)
         likely contains fake news or not.
 
-        @param post_txt - String, text to examine the legitimacy of
-        @return - Boolean
+        @param post_txt - String, text contents of a post to examine the 
+                        legitimacy of
+        @param news_txt - String, the contents of the news banner on a post
+                        to examine the legitimacy of
+        @return - Boolean, determination of whether the post contained
+                        fake news
         """
-        txt_fake = image_fake = False
+        news_fake = post_fake = False
         if post_txt:
-            txt_fake = self._determine(post_txt)
-        if image_txt:
-            image_fake = self._dtermine(image_txt) #TODO chop out image stuff
+            post_fake = self._determine(post_txt)
+        if news_txt:
+            news_fake = self._determine(news_txt)
         
-        return txt_fake or image_fake
+        return news_fake or post_fake
 
     def _determine(self, text):#TODO: return other info about probabilty and which determinator did it?
         """
@@ -46,15 +50,15 @@ class FakeDeterminator(object, metaclass=Singleton):
         @return - Boolean, indicating if text is likely to be fake (True) or 
                   legit (False)
         """
-        #perform more(?) reliable fact check first
+        #perform the more(?) reliable fact check method first
         api_check = self._fact_check_determinator(text)
-        #TODO return more info here???
+
         if api_check == 1:
             return True
         elif api_check == 0:
             return False
         else:
-            # -1 indicates no matching API response for text
+            # -1 indicates no matching API response for text, resort to AI
             if self._predict_determinator(text):
                 return True 
             else:

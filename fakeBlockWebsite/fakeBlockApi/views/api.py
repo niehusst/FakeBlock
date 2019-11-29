@@ -34,22 +34,16 @@ class FakeNewsDetectorApi(APIView):
 							(is always 1.0 when `determinator` is 'factApi')
 		"""
 		post_text = request.data['post_text'] if 'post_text' in request.data else None
-		image_url = request.data['image_url'] if 'image_url' in request.data else None
-		image_text = None
+		news_text = request.data['news_text'] if 'news_text' in request.data else None
 
-		# perform OCR on image, if there is one  (This can take upwards of 30 seconds!)
-		#(TODO: more efficient way to do this? avoid rebuilding object every time? test latency w/ and w/o OCR. Option to turn off OCR?)
-		#if image_url:
-		#	ocr = ImageOCR()
-		#	text_lines = ocr.recognize(image_url)
-		#	image_text = ' '.join(text_lines)
+		# get the singleton instance of FakeDeterminator class
 		determinator = FakeDeterminator()
-		#TODO: debug
+		#TODO: debug prints
 		#print(post_text)
-		#print(image_text)
-		evaluation = determinator.evaluate_post(post_text)
+		print(news_text)
+		evaluation = determinator.evaluate_post(post_text, news_text) 
 
-		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} 
+		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} #TODO make this reflect results of NN
 		return Response(data=result)
 
 
