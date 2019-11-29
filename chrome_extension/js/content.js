@@ -139,45 +139,41 @@ function getPostText(targetPost) {
 }
 
 /**
- * Retrieve URL of the image in targetPost, if any. Returns empty string when
- * targetPost contains no image.
+ * Retrieve the text from targetPost's news banner, if there is
+ * one present in targetPost (else empty string).
  *
- * @param targetPost - a jQuery object containing the post to fetch image URL from
- * @return - String, the src URL of the post image, or empty string
+ * @param targetPost - a jQuery object, containing the HTML to search in
+ * @return - String, the contents of the news banner, or empty string
  */
-function getPostUrl(targetPost) {
-	var imgElem = targetPost.find('a[data-render-location="newsstand"]').find('img');
+function getNewsText(targetPost) {
+	var newsElem = targetPost.find('div.hidden_elem');
 	// ensure we found anything
-	if (imgElem.length) {
-		return String(imgElem.prop("src"));
+	if (newsElem.length) {
+		return String(newsElem.prev().find("a").text());
 	} else {
-		// no post image element, try to find story attachement image
-		var storyImgElem = targetPost.find('div.fbStoryAttachmentImage').find('img');
-		if (storyImgElem.length) {
-			return String(storyImgElem.prop("src"));
-		} else {
-			// probs not any image in post
-			return '';
-		}
+		// no news banner in this post
+		return '';
 	}
 }
 
 /** 
  * Determine if a post is fake news or not by calling FakeBlock API. The 
- * response is asynchronously handled by a Promise; the target post is blocked
- * or not once the API responds.
+ * response is asynchronously handled by a Promise; the target post saved into
+ * the array of blocked posts or not once the API responds with the 
+ * determination of the post's validity.
  *
- * @param targetPost - an object containing the target post element
+ * @param targetPost - a jQuery object containing the target post element
  * @return - None, run for the side-effects
  */
 function isFakeNews(targetPost) {
-	var imgUrl = getPostUrl(targetPost); //TODO chop out
-	var postText = getPostText(targetPost); //TODO have this be able to find external news link text
+	var newsText = getNewsText(targetPost); 
+	var postText = getPostText(targetPost); 
 
 	//tell events script to make API call
 	chrome.runtime.sendMessage(
-		{todo: "apiCall", text: postText, url: imgUrl},
+		{todo: "apiCall", text: postText, news: newsText},
 		response => {
+			// async handling of response
 			if (response["fake"]) {
 				if (activated) {
 					// hide post contents and inject blocky notice

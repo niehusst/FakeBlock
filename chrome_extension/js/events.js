@@ -33,19 +33,18 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 	if (request.todo === "apiCall") {
 		// make fetch call to FakeBlock API using info scraped from content.js
-		const postData = { //TODO any CORS stuff here required??
+		const postData = {
 			headers: {
 				'Accept': "application/json",
 				'content-type': "application/json"
 			},
 			body: JSON.stringify({
 				post_text: request.text,
-				image_url: request.url
+				image_url: request.news
 			}),
 			method: "POST"
 		};
 		const apiUrl = 'http://127.0.0.1:8000/api/fake'; //TODO change to real url after deploy 2 heroku
-		var isFake = false;
 
 		fetch(apiUrl, postData)
 		.then(response => response.json())
