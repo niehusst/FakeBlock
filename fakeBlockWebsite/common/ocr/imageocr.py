@@ -32,6 +32,12 @@ POSSIBILITY OF SUCH DAMAGE.
 # text_lines = ocr.recognize(image_url)
 # image_text = ' '.join(text_lines)
 
+#requries homebrew installation of tesseract4
+#requires pip installations of:
+#pytesseract
+#pillow
+#cld2-cffi
+
 import sys
 import os
 import re
