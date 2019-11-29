@@ -40,7 +40,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 			},
 			body: JSON.stringify({
 				post_text: request.text,
-				image_url: request.news
+				news_text: request.news
 			}),
 			method: "POST"
 		};

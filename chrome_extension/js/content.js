@@ -146,10 +146,10 @@ function getPostText(targetPost) {
  * @return - String, the contents of the news banner, or empty string
  */
 function getNewsText(targetPost) {
-	var newsElem = targetPost.find('div.hidden_elem');
+	var newsElem = targetPost.find('div.ellipsis');
 	// ensure we found anything
 	if (newsElem.length) {
-		return String(newsElem.prev().find("a").text());
+		return String(newsElem.parent().parent().next().children().children().text());
 	} else {
 		// no news banner in this post
 		return '';
