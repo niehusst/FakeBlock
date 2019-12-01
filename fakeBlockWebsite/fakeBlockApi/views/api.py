@@ -36,11 +36,9 @@ class FakeNewsDetectorApi(APIView):
 		post_text = request.data['post_text'] if 'post_text' in request.data else None
 		news_text = request.data['news_text'] if 'news_text' in request.data else None
 
-		# get the singleton instance of FakeDeterminator class
+		# get the singleton instance of FakeDeterminator class     TODO can this be a global??
 		determinator = FakeDeterminator()
-		#TODO: debug prints
-		#print(post_text)
-		print(news_text)
+
 		evaluation = determinator.evaluate_post(post_text, news_text) 
 
 		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} #TODO make this reflect results of NN
