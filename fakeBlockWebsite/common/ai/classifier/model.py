@@ -20,9 +20,20 @@ import tqdm
 import tqdm.auto
 tqdm.tqdm = tqdm.auto.tqdm
 
-#tf.enable_eager_execution() #comment this out if causing errors
-#tf.logging.set_verbosity(tf.logging.DEBUG)
-
+#svm imports
+from nltk.tokenize import word_tokenize
+from nltk import pos_tag
+from nltk.corpus import stopwords
+from nltk.stem import WordNetLemmatizer
+from sklearn.preprocessing import LabelEncoder
+from collections import defaultdict
+from nltk.corpus import wordnet as wn
+from sklearn.feature_extraction.text import TfidfVectorizer
+from sklearn import model_selection, naive_bayes, svm
+from sklearn.metrics import accuracy_score
+import nltk
+nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 ###             SET MODEL CONFIGURATIONS             ###
@@ -56,32 +67,53 @@ data_frame = pd.read_csv(CSV_PATH)
 Construct numpy ndarrays from the loaded csv to use as training
 and testing datasets.
 """ 
-news_titles = data_frame['title']
+news_titles = [word_tokenize(str(string).lower()) for string in data_frame['title']] #lowering may destroy valuable context data from all caps words?
 news_fakeness = data_frame['fake']
 
-
-vectorizer = CountVectorizer(analyzer = "word", 
-                             binary = True, 
-                             min_df = 2,
-                             stop_words='english')
-title_array = vectorizer.fit_transform(news_titles).toarray()
-vec_news_titles = pd.DataFrame(title_array, columns=vectorizer.get_feature_names())
-
-
 # apply preprocessing functions with map
+#svm preproc
+tag_map = defaultdict(lambda : wn.NOUN)
+tag_map['J'] = wn.ADJ
+tag_map['V'] = wn.VERB
+tag_map['R'] = wn.ADV
+
+for index,entry in enumerate(news_titles):
+    # Declaring Empty List to store the words that follow the rules for this step
+    Final_words = []
+    # Initializing WordNetLemmatizer()
+    word_Lemmatized = WordNetLemmatizer()
+    # pos_tag function below will provide the 'tag' i.e if the word is Noun(N) or Verb(V) or something else.
+    for word, tag in pos_tag(entry):
+        # Below condition is to check for Stop words and consider only alphabets
+        if word not in stopwords.words('english') and word.isalpha():
+            word_Final = word_Lemmatized.lemmatize(word,tag_map[tag[0]])
+            Final_words.append(word_Final)
+    # The final processed set of words for each iteration will be stored in 'text_final'
+    data_frame.loc[index,'text_final'] = str(Final_words)
+
 
 # reshape input data TODO?
 
 # split the preprocessed data into train and test
 train_titles, test_titles, train_fake, test_fake = \
-  train_test_split(vec_news_titles, news_fakeness, test_size=test_size_percent, random_state=42)
+  train_test_split(data_frame['text_final'], news_fakeness, test_size=test_size_percent, random_state=42)
 
 num_train_examples = len(train_titles)
 num_test_examples = len(test_titles)
 
+#encode for SVM
+encoder = LabelEncoder()
+train_fake = encoder.fit_transform(train_fake)
+test_fake = encoder.fit_transform(test_fake)
 
+Tfidf_vect = TfidfVectorizer(max_features=5000)
+Tfidf_vect.fit(data_frame['text_final'])
+print(train_titles)
+Train_titles_Tfidf = Tfidf_vect.transform(train_titles)
+Test_titles_Tfidf = Tfidf_vect.transform(test_titles)
+#print(Tfidf_vect.vocabulary_)
 """
-Create generator for feeding the training data to the model
+TODO: Create generator for feeding the training data to the model
 in batches?
 """
 
@@ -98,7 +130,10 @@ problem at hand, a prediction (regression) model would likely be better
 
 TODO: compare the many diff models
 git DNN
-SVM
+SVM {
+    Training Accuracy: 88.02%
+    Testing Accuracy: 77.41%
+}
 Naive Bayes { #note that these may be unreliable metrics, although it appears to do reasonably better than random/constant guessing
     Training Accuracy: 86.64%
     Testing Accuracy: 77.93%
@@ -128,8 +163,7 @@ Model definition TODO: ....
 most fb posts wont be longer than 200 chars???
 """
 
-# Attempt at Naive Bayes model (kind of using crap metrics)
-from sklearn.metrics import accuracy_score
+# Attempt at SVM model
 
 def evaluate_model(predict_fun, X_train, y_train, X_test, y_test):
     '''
@@ -146,14 +180,13 @@ def evaluate_model(predict_fun, X_train, y_train, X_test, y_test):
     return train_acc, test_acc
 
 
-#get generic bayes model
-from sklearn.naive_bayes import MultinomialNB
-model = MultinomialNB()
-model.fit(train_titles, train_fake)
+#get generic svm model
+model = svm.SVC(C=1.0, kernel='linear', degree=3, gamma='auto')
+model.fit(Train_titles_Tfidf,train_fake)
 
 
 # evaluate model
-train_acc, test_acc = evaluate_model(model.predict, train_titles, train_fake, test_titles, test_fake)
+train_acc, test_acc = evaluate_model(model.predict, Train_titles_Tfidf, train_fake, Test_titles_Tfidf, test_fake)
 print("Training Accuracy: {:.2f}%".format(train_acc*100))
 print("Testing Accuracy: {:.2f}%".format(test_acc*100))
 
