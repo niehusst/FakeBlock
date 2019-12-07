@@ -1,4 +1,5 @@
 #pip installations 
+#installing tf may require a `conda remove wrapt`
 django==2.2.6
 djangorestframework==3.9.2
 numpy
@@ -7,6 +8,6 @@ google-api-python-client
 nltk
 tensorflow
 tensorboard
-keras
 pandas
 sklearn
+tqdm

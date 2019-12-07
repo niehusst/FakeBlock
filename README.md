@@ -4,6 +4,7 @@ their news feeds by obscuring posts determined to be fake news.
 Utilizing a mixture of AI and the Google fact checking API, FakeBlock
 meticulously examines each post to determine its legitimacy before
 allowing it to be shown to the user.
+TODO specifically target englush political fake news???
 
 ## Author
 * **Liam Niehus-Staab** - [niehusst](https://github.com/niehusst)
