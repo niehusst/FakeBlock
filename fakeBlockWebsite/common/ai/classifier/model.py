@@ -30,7 +30,7 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 1
+num_epochs = 10
 
 # Data info
 MAX_SEQUENCE_LENGTH = 200 #max num words in typical FB post
@@ -53,14 +53,14 @@ print("Loading and processing data\n")
 
 data_frame = pd.read_csv(CSV_PATH)
 
-"""
-Construct numpy ndarrays from the loaded csv to use as training
-and testing datasets.
+"""TODO: understand what is happeingin here. Could other/extra processing improve results?
+Process the text input (news titles) into tokenized number
+sequences that the model can more easily learn/be run on.
 """ 
 news_titles = data_frame['title']
 news_fakeness = data_frame['fake']
 
-# apply preprocessing functions with map
+# apply preprocessing
 tokenizer = Tokenizer(num_words=MAX_NUM_WORDS)
 tokenizer.fit_on_texts(news_titles)
 sequences = tokenizer.texts_to_sequences(news_titles)
@@ -72,7 +72,6 @@ data = pad_sequences(sequences,
                      padding='pre', 
                      truncating='pre')
 
-# reshape input data TODO?
 
 # split the preprocessed data into train and test
 train_titles, test_titles, train_fake, test_fake = \
@@ -82,10 +81,9 @@ num_train_examples = len(train_titles)
 num_test_examples = len(test_titles)
 
 """
-Create generator for feeding the training data to the model
+Define generator function for feeding the training data to the model
 in batches
 """
-#TODO fix this func
 def load_data(train_data, train_labels, idx, batch_size):
     start = idx * batch_size
     end = start + batch_size
@@ -116,7 +114,10 @@ problem at hand, a prediction (regression) model would likely be better
 (response can be threshholded after the fact)
 
 TODO: compare the many diff models
-git DNN
+git DNN {
+    Final (testing) accuracy: 0.7841007709503174
+    Final AUC: 0.863892138004303
+}
 SVM {
     Training Accuracy: 88.02%
     Testing Accuracy: 77.41%
@@ -127,13 +128,6 @@ Naive Bayes { #note that these may be unreliable metrics, although it appears to
 }
 LSTM?
 
-
-Data needs pre-processing?
-CLASSIC TYPES OF PREPROC
--> convert words to numbers + embedding vector conversion
-(manually required??)
--> TFIDF
--> word2vec
 
 https://www.toptal.com/machine-learning/nlp-tutorial-text-classification
 // ^ this performed worse than SVM
@@ -195,7 +189,7 @@ model.fit_generator(generator(train_titles, train_fake, batch_size=BATCH_SIZE, s
 
 # evaluate the accuracy of the trained model using the test dataset
 metrics = model.evaluate(test_titles, test_fake)
-print("Final loss:{}\nFinal accuracy:{}\nFinal AUC:{}".format(metrics[0], metrics[1], metrics[3]))
+print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
 
 
 
