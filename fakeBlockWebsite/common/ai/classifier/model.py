@@ -139,7 +139,6 @@ model = tf.keras.Sequential([
                          input_length=MAX_SEQUENCE_LENGTH,
                          trainable=True),
     tf.keras.layers.Conv1D(128, 5, activation='relu'),
-    tf.keras.layers.GlobalMaxPooling1D(),
     tf.keras.layers.Conv1D(128, 5, activation='relu'),
     tf.keras.layers.GlobalMaxPooling1D(),
         
