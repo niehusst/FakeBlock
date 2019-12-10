@@ -9,11 +9,9 @@ import time
 
 # Imports for dataset pre-processing
 from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import CountVectorizer #FOR naive bayes. TODO remove
 import pandas as pd
 from tensorflow.keras.preprocessing.text import Tokenizer
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.utils import to_categorical
 
 # Improve training progress bar display
 import tqdm
@@ -30,7 +28,7 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 10
+num_epochs = 4  #training caps out around 4 ephochs?
 
 # Data info
 MAX_SEQUENCE_LENGTH = 200 #max num words in typical FB post
@@ -61,7 +59,7 @@ news_titles = data_frame['title']
 news_fakeness = data_frame['fake']
 
 # apply preprocessing
-tokenizer = Tokenizer(num_words=MAX_NUM_WORDS)
+tokenizer = Tokenizer(num_words=MAX_NUM_WORDS) #TODO to do prediction on arbitrary text do i need to encode uing THIS specific tokenzed seq or do i just cal this function on any input text??
 tokenizer.fit_on_texts(news_titles)
 sequences = tokenizer.texts_to_sequences(news_titles)
 
@@ -79,6 +77,8 @@ train_titles, test_titles, train_fake, test_fake = \
 
 num_train_examples = len(train_titles)
 num_test_examples = len(test_titles)
+steps_in_epoch = (num_train_examples // BATCH_SIZE)
+
 
 """
 Define generator function for feeding the training data to the model
@@ -87,9 +87,9 @@ in batches
 def load_data(train_data, train_labels, idx, batch_size):
     start = idx * batch_size
     end = start + batch_size
-    x = train_data[start:end]
-    y = train_labels[start:end]
-    return (np.array(x), np.array(y))
+    x = np.array(train_data[start:end])
+    y = np.array(train_labels[start:end])
+    return (x, y)
 
 def generator(train_data, train_labels, batch_size, steps):
     idx=1
@@ -99,6 +99,7 @@ def generator(train_data, train_labels, batch_size, steps):
         if idx < steps:
             idx += 1
         else:
+            #start new epoch
             idx = 1
 
 
@@ -106,15 +107,16 @@ print("Data processing complete\n")
 
 ###            DEFINITION OF MODEL SHAPE             ###
 """
-Naive Bayes and SVM show decent results, but Deep learning models
-take the cake performance-wise (usually?).
+#TODO find optimal hyper params. grid search? k-folds cross-validation?? random search?
+#TODO add more hidden layers? more complex network better able to approximate this function space?
 
 I could make a classification model, but given the ambiguity of the
 problem at hand, a prediction (regression) model would likely be better
 (response can be threshholded after the fact)
 
 TODO: compare the many diff models
-git DNN {
+git DNN { 
+    #seems to be overfitting; test acc doesnt get much better after more than 1 epoch
     Final (testing) accuracy: 0.7841007709503174
     Final AUC: 0.863892138004303
 }
@@ -127,13 +129,8 @@ Naive Bayes { #note that these may be unreliable metrics, although it appears to
     Testing Accuracy: 77.93%
 }
 LSTM?
+Attention?
 
-
-https://www.toptal.com/machine-learning/nlp-tutorial-text-classification
-// ^ this performed worse than SVM
-
-
-most fb posts wont be longer than 200 chars???
 """
 model = tf.keras.Sequential([
     # part 1: word and sequence processing
@@ -143,15 +140,17 @@ model = tf.keras.Sequential([
                          trainable=True),
     tf.keras.layers.Conv1D(128, 5, activation='relu'),
     tf.keras.layers.GlobalMaxPooling1D(),
+    tf.keras.layers.Conv1D(128, 5, activation='relu'),
+    tf.keras.layers.GlobalMaxPooling1D(),
         
     # part 2: classification
     tf.keras.layers.Dense(128, activation='relu'),
+    tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
-    # 1 output: predict classify input as fake or not
 ])
 
 
-# small step size works best
+# build the model
 model.compile(optimizer=tf.keras.optimizers.Adam(lr=step_size), #'rmsprop'
               loss='binary_crossentropy',
               metrics=['accuracy',
@@ -160,7 +159,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(lr=step_size), #'rmsprop'
                         tf.keras.metrics.Recall(), 
                         tf.keras.metrics.Precision()])
 
-print(model.summary()) #see the shape of the model
+#print(model.summary()) #see the shape of the model
 
 
 ###                   TRAIN THE MODEL                ###
@@ -177,7 +176,6 @@ callbacks.append(tf.keras.callbacks.TensorBoard(log_dir='tb_logs/{}'.format(time
 print('Fitting the model\n')
 # start training the model using the data generator and the configurations
 # specified at the top of the file
-steps_in_epoch = (num_train_examples // BATCH_SIZE)
 model.fit_generator(generator(train_titles, train_fake, batch_size=BATCH_SIZE, steps=steps_in_epoch),
     callbacks=callbacks, 
     epochs=num_epochs,
@@ -190,7 +188,6 @@ model.fit_generator(generator(train_titles, train_fake, batch_size=BATCH_SIZE, s
 # evaluate the accuracy of the trained model using the test dataset
 metrics = model.evaluate(test_titles, test_fake)
 print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
-
 
 
 ###                 SAVING THE MODEL                 ###
