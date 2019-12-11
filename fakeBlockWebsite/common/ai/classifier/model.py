@@ -28,16 +28,17 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 4  #training caps out around 4 ephochs?
+num_epochs = 2  #TODO training caps out around 4 ephochs?
 
 # Data info
-MAX_SEQUENCE_LENGTH = 200 #max num words in typical FB post
-MAX_NUM_WORDS = 25000 #max that embedder can learn
-EMBEDDING_DIM = 300
+MAX_SEQUENCE_LENGTH = 200  # max num words in typical FB post
+MAX_NUM_WORDS = 25000      # max that embedder can learn
+EMBEDDING_DIM = 300        # what GloVe uses
 
 # Saving
 shape_path = 'trained_model/model_shape.json'
 weight_path = 'trained_model/model_weights.h5'
+tokenizer_path = 'trained_model/tokenizer.json'
 
 # TensorBoard 
 tb_graph = False
@@ -59,8 +60,12 @@ news_titles = data_frame['title']
 news_fakeness = data_frame['fake']
 
 # apply preprocessing
-tokenizer = Tokenizer(num_words=MAX_NUM_WORDS) #TODO to do prediction on arbitrary text do i need to encode uing THIS specific tokenzed seq or do i just cal this function on any input text??
+tokenizer = Tokenizer(num_words=MAX_NUM_WORDS) 
 tokenizer.fit_on_texts(news_titles)
+# save the tokenizer for use later
+with fp as open(tokenizer_path, 'w'):
+    fp.write(tokenizer.to_json())
+
 sequences = tokenizer.texts_to_sequences(news_titles)
 
 word_index = tokenizer.word_index
@@ -139,18 +144,16 @@ model = tf.keras.Sequential([
                          input_length=MAX_SEQUENCE_LENGTH,
                          trainable=True),
     tf.keras.layers.Conv1D(128, 5, activation='relu'),
-    tf.keras.layers.Conv1D(128, 5, activation='relu'),
     tf.keras.layers.GlobalMaxPooling1D(),
         
     # part 2: classification
     tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(64, activation='relu'),
     tf.keras.layers.Dense(1, activation='sigmoid')
 ])
 
 
 # build the model
-model.compile(optimizer=tf.keras.optimizers.Adam(lr=step_size), #'rmsprop'
+model.compile(optimizer=tf.keras.optimizers.Adam(lr=step_size),
               loss='binary_crossentropy',
               metrics=['accuracy',
                         'mse', 
@@ -187,6 +190,10 @@ model.fit_generator(generator(train_titles, train_fake, batch_size=BATCH_SIZE, s
 # evaluate the accuracy of the trained model using the test dataset
 metrics = model.evaluate(test_titles, test_fake)
 print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
+
+
+#TODO: analyze which values the model misses most
+model.evaluate(test_titles[0], test_fake[0], batch_size=1)
 
 
 ###                 SAVING THE MODEL                 ###
