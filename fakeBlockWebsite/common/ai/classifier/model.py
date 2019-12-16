@@ -28,7 +28,7 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 1  #TODO training caps out around 4 ephochs?
+num_epochs = 4  #TODO training caps out around 4 ephochs?
 
 # Data info
 MAX_SEQUENCE_LENGTH = 200  # max num words in typical FB post
@@ -63,7 +63,7 @@ news_fakeness = data_frame['fake']
 tokenizer = Tokenizer(num_words=MAX_NUM_WORDS) 
 tokenizer.fit_on_texts(news_titles)
 # save the tokenizer for use later
-with open(tokenizer_path, 'w') as fp:
+with fp as open(tokenizer_path, 'w'):
     fp.write(tokenizer.to_json())
 
 sequences = tokenizer.texts_to_sequences(news_titles)
@@ -114,7 +114,6 @@ print("Data processing complete\n")
 """
 #TODO find optimal hyper params. grid search? k-folds cross-validation?? random search?
 #TODO add more hidden layers? more complex network better able to approximate this function space?
-#TODO add chunk of mundain texts as real news to balance against non-news on fb
 
 I could make a classification model, but given the ambiguity of the
 problem at hand, a prediction (regression) model would likely be better
@@ -122,7 +121,7 @@ problem at hand, a prediction (regression) model would likely be better
 
 TODO: compare the many diff models
 git DNN { 
-    #seems to be overfitting?; test acc doesnt get much better after more than 1 epoch
+    #seems to be overfitting; test acc doesnt get much better after more than 1 epoch
     Final (testing) accuracy: 0.7841007709503174
     Final AUC: 0.863892138004303
 }
@@ -134,7 +133,11 @@ Naive Bayes { #note that these may be unreliable metrics, although it appears to
     Training Accuracy: 86.64%
     Testing Accuracy: 77.93%
 }
-LSTM?
+GRU-LSTM {
+    #takes long time to train (8min per epoch) and doesnt seem to immprove after the first 2 epochs either
+    Final accuracy: 0.728419303894043
+    Final AUC: 0.8078713417053223
+}
 Attention?
 
 """
@@ -144,8 +147,14 @@ model = tf.keras.Sequential([
                          EMBEDDING_DIM, 
                          input_length=MAX_SEQUENCE_LENGTH,
                          trainable=True),
-    tf.keras.layers.Conv1D(128, 5, activation='relu'),
-    tf.keras.layers.GlobalMaxPooling1D(),
+    tf.keras.layers.GRU(32, return_sequences=True, recurrent_dropout=0.2),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.GRU(32, return_sequences=True, recurrent_dropout=0.2),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.GRU(32, return_sequences=True, recurrent_dropout=0.2),
+    tf.keras.layers.Dropout(0.5),
+    tf.keras.layers.GRU(32, recurrent_dropout=0.2),
+    tf.keras.layers.Dropout(0.5),
         
     # part 2: classification
     tf.keras.layers.Dense(128, activation='relu'),
@@ -162,7 +171,7 @@ model.compile(optimizer=tf.keras.optimizers.Adam(lr=step_size),
                         tf.keras.metrics.Recall(), 
                         tf.keras.metrics.Precision()])
 
-#print(model.summary()) #see the shape of the model
+print(model.summary()) #see the shape of the model
 
 
 ###                   TRAIN THE MODEL                ###
@@ -172,7 +181,7 @@ callbacks = []
 #>tensorboard --logdir=/path/to/logs
 callbacks.append(tf.keras.callbacks.TensorBoard(log_dir='tb_logs/{}'.format(time.time()),
                                                  write_graph=tb_graph,
-                                                #batch_size=BATCH_SIZE,
+                                                 batch_size=BATCH_SIZE,
                                                  update_freq=tb_update_freq))
 
 
@@ -193,7 +202,8 @@ metrics = model.evaluate(test_titles, test_fake)
 print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
 
 
-#TODO: analyze which values the model misses most???
+#TODO: analyze which values the model misses most
+model.evaluate(test_titles[0], test_fake[0], batch_size=1)
 
 
 ###                 SAVING THE MODEL                 ###
