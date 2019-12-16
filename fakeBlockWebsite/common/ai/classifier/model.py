@@ -28,7 +28,7 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 2  #TODO training caps out around 4 ephochs?
+num_epochs = 1  #TODO training caps out around 4 ephochs?
 
 # Data info
 MAX_SEQUENCE_LENGTH = 200  # max num words in typical FB post
@@ -63,7 +63,7 @@ news_fakeness = data_frame['fake']
 tokenizer = Tokenizer(num_words=MAX_NUM_WORDS) 
 tokenizer.fit_on_texts(news_titles)
 # save the tokenizer for use later
-with fp as open(tokenizer_path, 'w'):
+with open(tokenizer_path, 'w') as fp:
     fp.write(tokenizer.to_json())
 
 sequences = tokenizer.texts_to_sequences(news_titles)
@@ -114,6 +114,7 @@ print("Data processing complete\n")
 """
 #TODO find optimal hyper params. grid search? k-folds cross-validation?? random search?
 #TODO add more hidden layers? more complex network better able to approximate this function space?
+#TODO add chunk of mundain texts as real news to balance against non-news on fb
 
 I could make a classification model, but given the ambiguity of the
 problem at hand, a prediction (regression) model would likely be better
@@ -121,7 +122,7 @@ problem at hand, a prediction (regression) model would likely be better
 
 TODO: compare the many diff models
 git DNN { 
-    #seems to be overfitting; test acc doesnt get much better after more than 1 epoch
+    #seems to be overfitting?; test acc doesnt get much better after more than 1 epoch
     Final (testing) accuracy: 0.7841007709503174
     Final AUC: 0.863892138004303
 }
@@ -171,7 +172,7 @@ callbacks = []
 #>tensorboard --logdir=/path/to/logs
 callbacks.append(tf.keras.callbacks.TensorBoard(log_dir='tb_logs/{}'.format(time.time()),
                                                  write_graph=tb_graph,
-                                                 batch_size=BATCH_SIZE,
+                                                #batch_size=BATCH_SIZE,
                                                  update_freq=tb_update_freq))
 
 
@@ -192,8 +193,7 @@ metrics = model.evaluate(test_titles, test_fake)
 print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
 
 
-#TODO: analyze which values the model misses most
-model.evaluate(test_titles[0], test_fake[0], batch_size=1)
+#TODO: analyze which values the model misses most???
 
 
 ###                 SAVING THE MODEL                 ###
