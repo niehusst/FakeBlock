@@ -1,5 +1,6 @@
 import tensorflow as tf
-from tensorflow.keras.preprocessing.text import Tokenizer, tokenizer_from_json
+from tensorflow.keras.preprocessing.text import Tokenizer
+from keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 
@@ -8,7 +9,7 @@ class ModelContainer:
 	def __init__(self, shape_file, weights_file, tokenizer_file):
 		#load up model
 		self.model = self._load_model(shape_file, weights_file)
-		with json_fp as open(tokenizer_file, 'r'):
+		with open(tokenizer_file, 'r') as json_fp:
 			self.tokenizer = tokenizer_from_json(json_fp.read())
 	
 	def predict(self, text):
@@ -18,14 +19,10 @@ class ModelContainer:
 		TODO: check if text is english and dont run on it if it isnt?
 
 		@param text - String, news title/fb post to evaluate
-		@return - Integer, 0-1
+		@return - Float, a probability in the range of 0-1 where a
+					prediction of 1 indicates FAKE and 0 is NOT FAKE
 		"""
-		processed_text = self._process(text)
-		results = self.model.predict(processed_text)
-		#TODO make readable! outputs a float for each char in text... does it need thresholding/combining somehow??
-		print(len(results))
-		print(results)
-		return results
+		return self.model.predict(self._process(text))[0][0]
 
 	def _load_model(self, shape_file, weights_file):
 		"""
@@ -56,13 +53,9 @@ class ModelContainer:
 		@return - Python list, a vector encoded array of positive integers
 					that represent `text` in a way the model understandes
 		"""
-		MAX_NUM_WORDS = 25000
 		MAX_SEQUENCE_LENGTH = 200
-		# load tokenizer used on training data
-		sequences = self.tokenizer.texts_to_sequences(text)
-
-		word_index = self.tokenizer.word_index
-		num_words = min(MAX_NUM_WORDS, len(word_index)) + 1
+		# use trained tokenizer to convert to seqs
+		sequences = self.tokenizer.texts_to_sequences([text])
 		data = pad_sequences(sequences, 
 							maxlen=MAX_SEQUENCE_LENGTH, 
 							padding='pre', 
@@ -71,6 +64,6 @@ class ModelContainer:
 
 #test building model
 m = ModelContainer('trained_model/model_shape.json', 'trained_model/model_weights.h5', 'trained_model/tokenizer.json')
-m.predict("Trump KILLS Hillary with shotgun on live TV!")
-m.predict("Who even is this Bill Murray guy?? Anyone want to fill me in?")
-m.predict("Speaker of the house, Elizabeth Warren, calls vote on new Bill")
+print(m.predict("Trump KILLS Hillary with shotgun on live TV!"))
+print(m.predict("Who even is this Bill Murray guy?? Anyone want to fill me in?"))
+print(m.predict("Speaker of the house, Elizabeth Warren, calls vote on new Bill"))
