@@ -5,6 +5,17 @@ from common.ocr.imageocr import ImageOCR
 from common.ai.determinators import FakeDeterminator
 
 
+
+#path from where manage.py is
+base_path = "common/ai/classifier/trained_model/"
+shapef = base_path + "model_shape.json"
+weightf = base_path + "model_weights.h5"
+tokenf = base_path + "tokenizer.json"
+thresh = 0.7
+# get the singleton instance of FakeDeterminator class     TODO does it even need to be singleton??
+determinator = FakeDeterminator(thresh, shapef, weightf, tokenf)
+
+
 # URL /api/fake
 class FakeNewsDetectorApi(APIView):
 
@@ -35,9 +46,6 @@ class FakeNewsDetectorApi(APIView):
 		"""
 		post_text = request.data['post_text'] if 'post_text' in request.data else None
 		news_text = request.data['news_text'] if 'news_text' in request.data else None
-
-		# get the singleton instance of FakeDeterminator class     TODO can this be a global??
-		determinator = FakeDeterminator()
 
 		evaluation = determinator.evaluate_post(post_text, news_text) 
 

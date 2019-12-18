@@ -3,6 +3,7 @@ from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 
 from common.common import get_logger, Singleton
+from common.ai.classifier.predict import PredictionModel
 from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY 
 
 err_logger = get_logger(__name__)
@@ -13,13 +14,14 @@ class FakeDeterminator(object, metaclass=Singleton):
     news or not. Requires instantiation for setup of various helpers.
     """
 
-    def __init__(self):
-        #TODO hold singleton instance of loaded dnn model
+    def __init__(self, threshold, shape_file, weights_file, tokenizer_file):
         #download resources for sentiment analysis
         nltk.download('vader_lexicon') 
         nltk.download('punkt')
         nltk.download('averaged_perceptron_tagger')
         self.sentiment_analyze = SentimentIntensityAnalyzer()
+        self.predictor = PredictionModel(shape_file, weights_file, tokenizer_file)
+        self.threshold = threshold
 
     def evaluate_post(self, post_txt=None, news_txt=None):
         """
@@ -59,7 +61,7 @@ class FakeDeterminator(object, metaclass=Singleton):
             return False
         else:
             # -1 indicates no matching API response for text, resort to AI
-            if self._predict_determinator(text):
+            if self._predict_determinator(text) > self.threshold:
                 return True 
             else:
                 return False
@@ -215,34 +217,13 @@ class FakeDeterminator(object, metaclass=Singleton):
 
     def _predict_determinator(self, text):
         """
-        Use a neural net to make a prediction
+        Use a neural net to make a prediction on the fakeness of
+        `text`
+
+        @return - Float, a probability in the range of 0-1 where a
+                    prediction of 1 indicates FAKE and 0 is NOT FAKE 
         """
-        #TODO use NLTK for neural net? dense net?? look online what others do
-        pass
+        return self.predictor.predict(text)
 
 
-"""
-{
-  "claims": [
-    {
-      "text": "Flat earth 'theory' says Tunisia’s Jugurtha Tableland is the stump of an ancient giant tree",
-      "claimant": "YouTube channel",
-      "claimDate": "2016-08-01T00:00:00Z",
-      "claimReview": [
-        {
-          "publisher": {
-            "name": "Africa Check",
-            "site": "africacheck.org"
-          },
-          "url": "https://africacheck.org/fbcheck/no-flat-earth-conspiracy-theorists-cant-claim-tunisias-jugurtha-tableland-as-the-stump-of-an-ancient-giant-tree/",
-          "title": "No, flat earth conspiracy theorists can't claim Tunisia's Jugurtha Tableland as the stump of an ancient giant tree",
-          "reviewDate": "2019-01-24T00:00:00Z",
-          "textualRating": "False",
-          "languageCode": "en"
-        }
-      ]
-    }
-  ]
-}
 
-"""

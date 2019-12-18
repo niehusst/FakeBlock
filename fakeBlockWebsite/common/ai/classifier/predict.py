@@ -5,7 +5,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 from tensorflow.keras.utils import to_categorical
 
 
-class ModelContainer:
+class PredictionModel(object):
 	def __init__(self, shape_file, weights_file, tokenizer_file):
 		#load up model
 		self.model = self._load_model(shape_file, weights_file)
@@ -62,8 +62,11 @@ class ModelContainer:
 							truncating='pre')
 		return data
 
-#test building model
-m = ModelContainer('trained_model/model_shape.json', 'trained_model/model_weights.h5', 'trained_model/tokenizer.json')
+#test model
+"""
+m = PredictionModel('trained_model/model_shape.json', 'trained_model/model_weights.h5', 'trained_model/tokenizer.json')
 print(m.predict("Trump KILLS Hillary with shotgun on live TV!"))
+print(m.predict("The earth is flat!"))
 print(m.predict("Who even is this Bill Murray guy?? Anyone want to fill me in?"))
 print(m.predict("Speaker of the house, Elizabeth Warren, calls vote on new Bill"))
+"""
