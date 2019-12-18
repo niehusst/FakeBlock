@@ -6,6 +6,7 @@ numpy
 django-cors-headers
 google-api-python-client
 nltk
+cld2
 tensorflow
 tensorboard
 pandas
