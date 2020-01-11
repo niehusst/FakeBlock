@@ -23,10 +23,10 @@ var blockedPosts = [];
  *
  * @param targetPost - an object containing the target post element
  * @param visibility - Boolean, whether the inject HTML is displayed or not
+ * @param confidence - Float, confidence level of the post being fake (0-1 range)
  */
-function injectBlock(targetPost, visibility) {
-	//TODO determine which image/text to use based on response from API?
-	// construct programatically instead? add id attribute??
+function injectBlock(targetPost, visibility, confidence) {
+	// construct HTML to insert to "block" a post. TODO: construct programatically instead?
 	var blocker_html1 = `
 	<div class="bg_filler" style="display: `
 	// set visibility of block
@@ -40,7 +40,7 @@ function injectBlock(targetPost, visibility) {
 		<div class="content_houser">
 			<img class="block_img" src="https://i.imgur.com/zPuiLgy.png" alt="Blocked">
 			<p class="block_txt">
-				This post has been determined to contain fake news.
+				This post has been determined to be ` + Math.floor(confidence*100) + `% likely to contain fake news.
 			</p>
 		</div>
 		<div class="btn_houser">
@@ -56,7 +56,6 @@ function injectBlock(targetPost, visibility) {
 	//https://i.imgur.com/zPuiLgy.png
 
 	// inject html before comments div
-	// TODO make it insert after profile head instead of before comments? not every post has comments (reposts are like 2 posts), but every post does have profile images
 	var mark = targetPost.children(':first-child').children(':first-child').children(':first-child').next().children(':first-child').next();
 	$(blocker_html1.concat(blocker_html2)).insertBefore(mark);
 }
@@ -179,7 +178,7 @@ function isFakeNews(targetPost) {
 					// hide post contents and inject blocky notice
 					toggleContents(targetPost, false);
 				}
-				injectBlock(targetPost, activated); //TODO pass in other info from response? diff UI for google block? show percent prob?
+				injectBlock(targetPost, activated, response["confidence"]); 
 
 				// save post as blocked
 				blockedPosts.push(targetPost.attr('id'));

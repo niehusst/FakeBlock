@@ -22,34 +22,33 @@ class FakeNewsDetectorApi(APIView):
 	def post(self, request):
 		"""
 		Decides if data provided in request body parameters contain fake news
-		or not. If bost post_text and a image_url are provided, they will be
-		evaluated separately.
+		or not. If both `post_text` and `news_text` are provided, the result 
+		will reflect the truth value of evaluating `post_text` or `news_text`.
+		Neither parameter is required, and either can be provided.
 
+		#TODO: curl example?
 
-		@param request - a rest_framework.request.Request object with the 
-						following required body parameters:
-				- post_text: string, contains the plain text of the Facebook
-							post to evaluate (required, but can be None)
-				- image_url: string, contains the url of the Facebook
-							post image to evaluate (required, but can be None)
+		@param request - a rest_framework.request.Request object with any of the 
+						following body parameters:
+				- post_text: string, contains the plain text body of the Facebook
+							post to evaluate 
+				- news_text: string, contains the plain text of the news title
+							banner attached to the Facebook post to evaluate 
 
-		@return result - a JsonResponse object containing the results of the
-						evaluation of the body parameter data:
+		@return result - a rest_framework.response.Response object containing 
+						the results of the evaluation of the body parameter data:
 				- fake: boolean, whether overall post was determined to
 							contain fake news.
-				- determinator: string, what level of the API AI made the
-							final judgement for `fake`
-							possible values=['factApi', 'neuralNet']
-				- probability: float, the certainty of the neural net's 
-							prediction if `determinator` is 'neuralNet'
-							(is always 1.0 when `determinator` is 'factApi')
+				- confidence: float, the certainty of the post being fake.
+							(Range 0-1, 0.0 being certainty of post being real,
+							1.0 being certainty of post being fake.)
 		"""
 		post_text = request.data['post_text'] if 'post_text' in request.data else None
 		news_text = request.data['news_text'] if 'news_text' in request.data else None
 
-		evaluation = determinator.evaluate_post(post_text, news_text) 
+		evaluation, confidence = determinator.evaluate_post(post_text, news_text) 
 
-		result = {'fake': evaluation, 'determinator': 'newsApi', 'probability': 1.00} #TODO make this reflect results of NN
+		result = {'fake': evaluation, 'confidence': confidence} 
 		return Response(data=result)
 
 
@@ -57,6 +56,7 @@ class FakeNewsDetectorApi(APIView):
 		"""
 		Method for handling CORS preflight requests. This is a public API, so
 		all origins are allowed.
+		Returns an HTTP response containing only the below headers.
 		"""
 		headers = {
 			'Access-Control-Allow-Origin': "*",

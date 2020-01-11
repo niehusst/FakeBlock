@@ -1,4 +1,5 @@
 import nltk
+import cld2
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 
@@ -12,6 +13,8 @@ class FakeDeterminator(object, metaclass=Singleton):
     """
     An object with methods for determining if text is likely to contain fake
     news or not. Requires instantiation for setup of various helpers.
+    As that setup time is a few seconds, this class uses the Singleton pattern
+    to avoid setting up the same helpers everytime.
     """
 
     def __init__(self, threshold, shape_file, weights_file, tokenizer_file):
@@ -32,48 +35,61 @@ class FakeDeterminator(object, metaclass=Singleton):
                         legitimacy of
         @param news_txt - String, the contents of the news banner on a post
                         to examine the legitimacy of
-        @return - Boolean, determination of whether the post contained
-                        fake news
+        @return - Tuple (Boolean, Float), boolean is the determination of 
+                        whether the post contained fake news, float gives
+                        confidence level (0-1.0 range) of texts being fake
         """
         news_fake = post_fake = False
         if post_txt:
-            post_fake = self._determine(post_txt)
+            post_fake, conf = self._determine(post_txt)
+            if post_fake:
+                return (True, conf)
         if news_txt:
-            news_fake = self._determine(news_txt)
+            news_fake, conf = self._determine(news_txt)
+            if news_fake:
+                return (True, conf)
         
-        return news_fake or post_fake
+        return (False, conf)
 
-    def _determine(self, text):#TODO: return other info about probabilty and which determinator did it?
+    def _determine(self, text):
         """
         Determines (using Google Fact Check API and a custom neural net) if
         the input text is likely to be fake news.
 
-        @param text - String, the text to evaluate the truthfulness of
-        @return - Boolean, indicating if text is likely to be fake (True) or 
-                  legit (False)
+        @param text - String, the text to evaluate the fakeness of
+        @return - Tuple (Boolean, Float), boolean is the determination of 
+                        whether the post contained fake news, float gives
+                        confidence level of texts being fake
+                        (0-1.0 range: 0 being real, 1 being fake)              
         """
+        #first check that text is english; both fact api and nn can only handle english
+        reliable, _, lang = cld2.detect(text)
+        if not reliable or lang[0][0] != "ENGLISH":
+            return (False, 0.0)
+
         #perform the more(?) reliable fact check method first
         api_check = self._fact_check_determinator(text)
 
         if api_check == 1:
-            return True
+            # google api found positive match, so news was real
+            return (False, 0.0)
         elif api_check == 0:
-            return False
-        else:
-            # -1 indicates no matching API response for text, resort to AI
-            if self._predict_determinator(text) > self.threshold:
-                return True 
-            else:
-                return False
+            # google api found negative match, so news was fake
+            return (True, 1.0)
+        else:# -1 (indicates no matching API response for text, resort to AI)
+            # if confidence is above threshold, consider fake
+            conf = self._predict_determinator(text) 
+            return (conf > self.threshold, conf)
 
     def _fact_check_determinator(self, text):
         """
-        maybe we try to do some NLP or response matching with the API results (of a more generalized search?)
-        #TODO: determine if this tool ultimately hurts or helps performance stats at end (same with OCR? still 2 slow. Unless Heroku server is super fast)
+        Query the Google FactCheck API to see if there is any information
+        about `text` in their databases.
 
         @param text - String, the query text to search for in the Google
                     Fact Check API
-        @return - Integer, -1 for No match found, 0 for False, 1 for True
+        @return - Integer, -1 for No match found, 0 for False news, 
+                    1 for True news
         """
         try:
             #make request to google fact check API
@@ -209,7 +225,7 @@ class FakeDeterminator(object, metaclass=Singleton):
             if len(rating) > 1 and rating[1] == "pinocchios":
                 return 0
 
-            # either it was a positive compound, indicating phrase was liekly
+            # either it was a positive compound, indicating phrase was likely
             # true, or it was a neutral compound, which could indicate anything
             # so we will return 1 on uncertainty to avoid blocking real news.
             return 1
@@ -220,6 +236,7 @@ class FakeDeterminator(object, metaclass=Singleton):
         Use a neural net to make a prediction on the fakeness of
         `text`
 
+        @param text - String, the text data to analyze the fakeness of
         @return - Float, a probability in the range of 0-1 where a
                     prediction of 1 indicates FAKE and 0 is NOT FAKE 
         """

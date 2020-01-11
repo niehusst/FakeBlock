@@ -62,11 +62,3 @@ class PredictionModel(object):
 							truncating='pre')
 		return data
 
-#test model
-"""
-m = PredictionModel('trained_model/model_shape.json', 'trained_model/model_weights.h5', 'trained_model/tokenizer.json')
-print(m.predict("Trump KILLS Hillary with shotgun on live TV!"))
-print(m.predict("The earth is flat!"))
-print(m.predict("Who even is this Bill Murray guy?? Anyone want to fill me in?"))
-print(m.predict("Speaker of the house, Elizabeth Warren, calls vote on new Bill"))
-"""
