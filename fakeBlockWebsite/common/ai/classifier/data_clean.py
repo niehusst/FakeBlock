@@ -66,6 +66,10 @@ news_df.index = list(range(len(news_df)))
 
 #delete unused cols
 news_df = news_df[['title', 'fake']]
+#make sure no nulls
+if news_df.isnull().values.any():
+	nan_rows = news_df[news_df['title'].isnull()]
+	news_df.drop(nan_rows.index, inplace=True)
 
 #balance data set to have equal sample sizes between binary classes
 num_fake = sum(news_df.fake)
