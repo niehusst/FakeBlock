@@ -19,7 +19,7 @@ each element when the extension is activated/deactivated
 var blockedPosts = [];
 
 /** 
- * Inject blocker html before the comments html
+ * Inject blocker html before the Facebook post comments html.
  *
  * @param targetPost - an object containing the target post element
  * @param visibility - Boolean, whether the inject HTML is displayed or not
@@ -40,7 +40,7 @@ function injectBlock(targetPost, visibility, confidence) {
 		<div class="content_houser">
 			<img class="block_img" src="https://i.imgur.com/zPuiLgy.png" alt="Blocked">
 			<p class="block_txt">
-				This post has been determined to be ` + Math.floor(confidence*100) + `% likely to contain fake news.
+				This post has been judged to be <b>` + Math.floor(confidence*100) + `%</b> likely to contain fake news.
 			</p>
 		</div>
 		<div class="btn_houser">

@@ -45,6 +45,8 @@ fake_news.drop_duplicates(inplace=True)
 
 #strip white-space off non-news twitter post strings
 non_news.applymap(lambda x: x.strip() if isinstance(x, str) else x)
+#cut non-news dataset size to reduce its representation in the data
+non_news.drop(non_news.sample(n=(len(non_news)-((len(gc_real)+len(pf_real))//2))).index, inplace=True)
 
 #create truth columns. Fake news has 1 (True) in it's `fake` column
 gc_fake['fake'] = 1

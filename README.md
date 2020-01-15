@@ -8,10 +8,9 @@ allowing it to be shown to the user.
 TODO specifically target englush (political?) fake new
 TODO ack data sets
 {
-	https://www.kaggle.com/shashank1558/preprocessed-twitter-tweets/data
+	https://www.kaggle.com/c/twitter-sentiment-analysis2/data
 	https://github.com/KaiDMML/FakeNewsNet
 	https://github.com/lutzhamel/fake-news
-
 	https://www.kaggle.com/mrisdal/fake-news
 }
 TODO add download link
@@ -52,12 +51,20 @@ details on how to get started with Chrome extensions on Google's [developer webs
 In order to make the local API visible to the extension, you will need to change the 
 value of the `apiUrl` parameter in the **events.js** file to `'http://127.0.0.1:8000/api/fake'`
 for the extension to find your localy hosted API. Lastly to start the API server,
-just call `python manage.py runserver` to start the Django server.
+just call `python manage.py runserver` to start the Django server to host the API locally.
+
+Lastly, you may have noticed that a `secrets.py` file is missing from the `fakeBlockWebsite/fakeBlockWebsite/`
+directory (for obvious security reasons), so you will have to create your own. It should contain:
+```
+SECRET_KEY='your django secret key here'
+GOOGLE_FACT_API_KEY='your google api key here'
+```
 
 Once everything is setup, you will need a Facebook account in order to test
 it on `https://www.facebook.com/?sk=nf` (the only URL the extension is set to run on).
-You should see the icon for the browser page extension light up on this page, and
-the extension will immediately start running in the background as soon as the DOM loads.
+Once you are logged in and reach the page, you should see the icon for the browser page 
+extension light up on this page, and the extension will immediately start running in the 
+background as soon as the DOM loads.
 
 Troubleshooting can be done with both the Chrome debugging tools and the output from the
 local Django server.
@@ -70,4 +77,5 @@ local Django server.
 * [Imgur](https://imgur.com/) for free online image hosting for my logos
 * [Google FactCheck API](https://developers.google.com/fact-check/tools/api/)
 * (Unused) Tesseract OCR modified from work by [johnlinp](https://github.com/johnlinp/meme-ocr)
-* [Heroku](https://www.heroku.com/) for hosting the API and website
+* [Heroku](https://www.heroku.com/) for hosting the API and demo website
+* [Bootstrap]()
