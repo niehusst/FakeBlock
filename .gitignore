@@ -3,3 +3,5 @@ secrets.py
 db.sqlite3
 __pycache__
 *.pyc
+tb_logs/*
+trained_model/*
