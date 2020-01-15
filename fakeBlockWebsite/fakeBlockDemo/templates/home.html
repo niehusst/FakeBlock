@@ -3,6 +3,7 @@
 <head>
 	<title>FakeBlock</title>
 	<link rel="icon" type="image/png" href="../resources/fbicon16.png">
+
 	<!-- Bootstrap mobile friendly -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta charset="UTF-8">
@@ -13,7 +14,8 @@
 	<link rel="stylesheet" href="../styles/bootstrap.min.css">
 	<!-- Custom styles for this template -->
 	<link href="../styles/demo.css" rel="stylesheet" type="text/css">
-
+	<!-- Custom JS -->
+	<script type="text/javascript" src="../scripts/demo.js"></script>
 </head>
 <body>
 	<div class="container flex-row">
@@ -21,10 +23,11 @@
 		<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-center">
 			<header class="masthead mb-auto">
 				<div class="inner">
-					<h3 class="masthead-brand">Cover</h3>
+					<img class="logo-header masthead-brand" src="../resources/fbNameWhite.png">
 					<nav class="nav nav-masthead justify-content-center">
 						<a class="nav-link active" href="#">Home</a>
-						<a class="nav-link" href="#">API</a>
+						<a class="nav-link" href="#">About</a><!-- GNU license shit here and mayber footer stuff if looks bad as foot? -->
+						<a class="nav-link" href="#">API</a><!-- TODO: api docs here -->
 						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
 					</nav>
 				</div>
@@ -34,20 +37,24 @@
 				<h1 class="cover-heading">Cover your page.</h1>
 				<p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
 				<p class="lead">
-					<a href="#" class="btn btn-lg btn-secondary">Learn more</a>
+					<a href="#demo-panel" class="btn btn-lg btn-secondary" id="try-btn">Give it a whack!</a>
 				</p>
 			</main>
 		</div>
 
-		<div class="container flex-column demo">
+		<div id="demo-panel" class="container flex-column demo">
 			<!-- post -->
 			<div class="card post">
 				<div class="card-header">
-					Create Post
+					<b>Create Post</b>
 				</div>
 				<ul class="list-group list-group-flush">
 					<li class="list-group-item">
-						TODO: text input here
+						<form>
+							<div class="form-group">
+								<textarea class="form-control" id="posttxt" rows="3" placeholder="What's on your mind?"></textarea>
+							</div>
+						</form>
 					</li>
 					<li class="list-group-item post-btn-container">
 						<button class="post-btn">Post</button>
