@@ -45,7 +45,7 @@ body {
 }
 
 
-/*
+/*TODO: fix wierd too much header spacing
  * Header
  */
 .masthead {
@@ -101,8 +101,52 @@ body {
 
 
 /*
+ * Demo
+ */
+.demo { /*TODO fix this so that it does the nice scrolly action thing */
+	margin-top: 10%;
+	margin-bottom: 10%;
+}
+
+
+/*
+ * Post
+ */
+.post {
+	width: 50%;
+	color: gray;
+	text-shadow: none;
+}
+
+.post-btn-container {
+	background: lightgray;
+}
+
+.post-btn {
+	color: white;
+	width: 100%;
+	background: #3b5998;
+}
+
+
+/*
  * Footer
  */
-.mastfoot {
-  color: rgba(255, 255, 255, .5);
+.footer-space {
+  padding-top: 10px;
+  width: 100%;
+}
+
+.footer-color {
+  background: #454545;
+  color: white;
+}
+
+.footer-text {
+  line-height: 1;
+  font-size: 12px;
+}
+
+.center {
+	text-align: center;
 }

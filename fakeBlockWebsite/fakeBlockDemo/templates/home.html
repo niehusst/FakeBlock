@@ -15,26 +15,64 @@
 	<link href="../styles/demo.css" rel="stylesheet" type="text/css">
 
 </head>
-<body class="text-center">
-	<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column">
-		<header class="masthead mb-auto">
-			<div class="inner">
-				<h3 class="masthead-brand">Cover</h3>
-				<nav class="nav nav-masthead justify-content-center">
-					<a class="nav-link active" href="#">Home</a>
-					<a class="nav-link" href="#">Features</a>
-					<a class="nav-link" href="#">Contact</a>
-				</nav>
-			</div>
-		</header>
+<body>
+	<div class="container flex-row">
 
-		<main role="main" class="inner cover">
-			<h1 class="cover-heading">Cover your page.</h1>
-			<p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
-			<p class="lead">
-				<a href="#" class="btn btn-lg btn-secondary">Learn more</a>
-			</p>
-		</main>
-	</div>
+		<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-center">
+			<header class="masthead mb-auto">
+				<div class="inner">
+					<h3 class="masthead-brand">Cover</h3>
+					<nav class="nav nav-masthead justify-content-center">
+						<a class="nav-link active" href="#">Home</a>
+						<a class="nav-link" href="#">API</a>
+						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
+					</nav>
+				</div>
+			</header>
+
+			<main role="main" class="inner cover">
+				<h1 class="cover-heading">Cover your page.</h1>
+				<p class="lead">Cover is a one-page template for building simple and beautiful home pages. Download, edit the text, and add your own fullscreen background photo to make it your own.</p>
+				<p class="lead">
+					<a href="#" class="btn btn-lg btn-secondary">Learn more</a>
+				</p>
+			</main>
+		</div>
+
+		<div class="container flex-column demo">
+			<!-- post -->
+			<div class="card post">
+				<div class="card-header">
+					Create Post
+				</div>
+				<ul class="list-group list-group-flush">
+					<li class="list-group-item">
+						TODO: text input here
+					</li>
+					<li class="list-group-item post-btn-container">
+						<button class="post-btn">Post</button>
+					</li>
+				</ul>
+			</div>
+
+			<!-- status image -->
+			<img>
+		</div>
+
+		<!-- TODO: make footer reflect actual content and stuff -->
+		<footer class="footer-color py-5 main-footer">
+			<div class="container footer-space center">
+
+				<p class="footer-text text-white">
+					Built with <a href="https://getbootstrap.com/" class="text-green">Bootstrap</a>,  <a href="http://fontawesome.io" class="text-green">Font Awesome</a>, and
+					<a href="https://fonts.google.com/specimen/Press+Start+2P?selection.family=Press+Start+2P" class="text-green">Press Start 2P</a>.
+					Hosted with &#x1F496; by <a href="https://pages.github.com/" class="text-green">Github Pages</a>
+				</p>
+				<hr>
+				<a href="https://github.com/niehusst/niehusst.github.io/blob/dev/LICENSE"><p class="footer-text text-white">Copyright &copy; 2019 Liam Niehus-Staab</p></a>
+			</div>
+		</footer>
+
+	</div><!--overall container-->
 </body>
 </html>
