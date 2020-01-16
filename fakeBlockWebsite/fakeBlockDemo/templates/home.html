@@ -52,11 +52,15 @@
 			</main>
 		</div>
 
-		<br id="demo-panel">
+		<h3 id="demo-panel" class="text-center demo-heading">DEMO</h3>
+		<p class="demo-text text-center">
+			Just type something into the text box and click Post, as if it were Facebook! FakeBlock will analyze your "post"
+			and behave just as the real Chrome extension does so you can get a taste for what FakeBlock can do for you.
+		</p>
 
 		<div class="container flex-column demo">
 			<!-- post -->
-			<div class="card post">
+			<div id="postbody" class="card post">
 				<div class="card-header">
 					<b>Create Post</b>
 				</div>
@@ -64,7 +68,7 @@
 					<li class="list-group-item">
 						<form>
 							<div class="form-group">
-								<textarea class="form-control" id="posttxt" rows="3" placeholder="What's on your mind?"></textarea>
+								<textarea class="form-control" id="posttxt" rows="3" placeholder="What's on your mind, Facebooker?"></textarea>
 							</div>
 						</form>
 					</li>
@@ -75,23 +79,27 @@
 			</div>
 
 			<!-- status image -->
-			<img>
+			
+				<img class="status-img" src="../resources/greenCheck.png">
+			
 		</div>
 
 		<!--TODO: add chrome store link-->
-		<p class="text-center">Like what you see? Download the free browser extension <b><a href="chrome://extensions/">HERE</a></b></p>
+		<p class="text-center demo-text text-center">
+			Like what you see? Download the free browser extension <b><a href="chrome://extensions/">HERE</a></b>
+		</p>
 
 		<!-- TODO: make footer reflect actual content and stuff -->
 		<footer class="footer-color py-5 main-footer">
-			<div class="container footer-space center">
+			<div class="container footer-space text-center">
 
 				<p class="footer-text text-white">
-					Built with <a href="https://getbootstrap.com/" class="text-green">Bootstrap</a>,  <a href="http://fontawesome.io" class="text-green">Font Awesome</a>, and
-					<a href="https://fonts.google.com/specimen/Press+Start+2P?selection.family=Press+Start+2P" class="text-green">Press Start 2P</a>.
-					Hosted with &#x1F496; by <a href="https://pages.github.com/" class="text-green">Github Pages</a>
+					Built with <a href="https://getbootstrap.com/">Bootstrap</a>,  <a href="http://fontawesome.io">Font Awesome</a>, and
+					<a href="https://fonts.google.com/specimen/Press+Start+2P?selection.family=Press+Start+2P">Press Start 2P</a>.
+					Hosted with &#x1F496; by <a href="https://pages.github.com/">Github Pages</a>
 				</p>
 				<hr>
-				<a href="https://github.com/niehusst/niehusst.github.io/blob/dev/LICENSE"><p class="footer-text text-white">Copyright &copy; 2019 Liam Niehus-Staab</p></a>
+				<a href="https://github.com/niehusst/FakeBlock/blob/master/LICENSE"><p class="footer-text text-white">Copyleft &copy; 2020 Liam Niehus-Staab</p></a>
 			</div>
 		</footer>
 

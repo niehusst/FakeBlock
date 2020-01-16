@@ -70,7 +70,7 @@ local Django server.
 * **Liam Niehus-Staab** - [niehusst](https://github.com/niehusst)
 
 ## Acknowledgements
-* Custom logo and images were adjusted from stock images under Creative Commons and from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
+* Custom logos were adjusted from stock images under Creative Commons and other images were taken from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
 * [Imgur](https://imgur.com/) for free online image hosting for my logos
 * [Google FactCheck API](https://developers.google.com/fact-check/tools/api/)
 * (Unused) Tesseract OCR modified from work by [johnlinp](https://github.com/johnlinp/meme-ocr)
