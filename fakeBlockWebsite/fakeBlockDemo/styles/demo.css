@@ -123,7 +123,6 @@ body {
 .demo {
 	margin-top: 5%;
 	margin-bottom: 5%;
-	/*background-color: #333;*/
 }
 
 .demo-heading {
@@ -138,7 +137,7 @@ body {
 /*
  * Post
  */
-.post {
+.posted,.post {
 	display: inline-block;
 	width: 50%;
 	color: #2e2e2e;
@@ -148,6 +147,18 @@ body {
 
 .post-btn-container {
 	background: lightgray;
+}
+
+.post-action {
+	font-size: 12pt;
+	color: gray;
+}
+.post-action:hover {
+	cursor: pointer;
+	color: #2f55a4;
+}
+.post-action:active {
+	color: #2f477a;
 }
 
 .post-btn {
@@ -165,6 +176,23 @@ body {
 	background: #2f477a;
 }
 
+.posted {
+	display: none;
+	float: left;
+}
+
+.profile-pic {
+	border-radius: 50%;
+	width: 10%;
+	display: inline-block;
+	float: left;
+	margin-right: 10px;
+}
+
+.card-text {
+	font-size: 12pt;
+}
+
 
 /*
  * Status image
@@ -177,6 +205,7 @@ body {
 
 .status-img {
 	width: 50%;
+	height: auto;
 }
 
 

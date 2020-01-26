@@ -29,4 +29,23 @@ $(document).ready(function(){
 			});
 		}
 	});
+
+
+	$("#make-post").on('click', function(event) {
+		// grab text from form
+		var post_text = $("#posttxt").val();
+
+		if(post_text) {
+			// set make-post window to none
+			$("#postbody").hide();
+			// set posted window to visible
+			$("#postedbody").show();
+
+			// put text from form into posted window
+			$("#postedtxt").text(post_text);
+
+			// call api on text
+
+		}
+	});
 });
