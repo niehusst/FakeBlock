@@ -169,10 +169,14 @@ body {
 /*
  * Status image
  */
+.status-container {
+	display: inline-block;
+	text-align: center;
+	vertical-align: top;
+}
+
 .status-img {
-	display: inline;
-	width: 20%;
-	margin: auto;
+	width: 50%;
 }
 
 
