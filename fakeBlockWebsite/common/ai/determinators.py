@@ -49,7 +49,7 @@ class FakeDeterminator(object, metaclass=Singleton):
             if news_fake:
                 return (True, conf)
         
-        return (False, conf)
+        return (False, 1.0)
 
     def _determine(self, text):
         """
