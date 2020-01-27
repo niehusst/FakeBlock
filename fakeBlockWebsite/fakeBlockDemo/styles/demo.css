@@ -140,6 +140,7 @@ body {
 .posted,.post {
 	display: inline-block;
 	width: 50%;
+	min-width: 500px;
 	color: #2e2e2e;
 	font-size: 10pt;
 	text-shadow: none;
@@ -193,6 +194,12 @@ body {
 	font-size: 12pt;
 }
 
+.post-stats {
+	color: gray;
+	text-align: right;
+	font-size: 10pt;
+}
+
 
 /*
  * Status image
@@ -235,8 +242,8 @@ body {
 /* post blocker */
 .block_img {
 	float: left;
-	width: 128px;
-	height: 128px;
+	width: 200px;
+	height: auto;
 	padding: 50px 40px;
 }
 
