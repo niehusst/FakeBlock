@@ -200,12 +200,17 @@ body {
 .status-container {
 	display: inline-block;
 	text-align: center;
+	margin-left: 15%;
 	vertical-align: top;
 }
 
 .status-img {
-	width: 50%;
+	width: 200px;
 	height: auto;
+}
+
+.no-display {
+	display: none;
 }
 
 
