@@ -10,6 +10,7 @@ from fakeBlockDemo.views.views import (DemoIndex, )
 
 #TODO: hide admin page
 #TODO: turn off debug mode
+#TODO: add custom error page?
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', DemoIndex.as_view(), name='demo_index_page'),
