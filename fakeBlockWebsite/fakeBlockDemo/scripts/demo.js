@@ -62,7 +62,7 @@ $(document).on('click', '#make-post', function(event) {
 		fetch(apiUrl, postData)
 		.then(response => response.json())
 		.then(data => handleAPIResponse(data)) // change status and blocking
-		.catch(error => handleAPIResponse({fake: false})); 
+		.catch(error => handleAPIResponse({fake: false}));
 
 	}
 });
