@@ -12,3 +12,4 @@ tensorboard
 pandas
 sklearn
 tqdm
+gunicorn
