@@ -28,7 +28,7 @@ and then immediatly released.
 
 ### Getting Started with Development
 If you want to make your own adjustments to this project, the first step is 
-installing the dependencies with `pip install -r DEPS`. This will set you up with 
+installing the dependencies with `pip install -r requirements.txt`. This will set you up with 
 the necessary tools to work with the Django API and TensorFlow neural network. If 
 you want to use the OCR module that I decided not to include, you will also have 
 to download Tesseract, following the instructions on [their github](https://github.com/tesseract-ocr/tesseract/wiki). 
