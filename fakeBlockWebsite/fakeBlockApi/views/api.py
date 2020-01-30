@@ -1,7 +1,6 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from common.ocr.imageocr import ImageOCR
 from common.ai.determinators import FakeDeterminator
 
 
