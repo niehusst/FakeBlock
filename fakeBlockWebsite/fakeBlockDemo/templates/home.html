@@ -2,24 +2,25 @@
 <html>
 <head>
 	<title>FakeBlock</title>
-	<link rel="icon" type="image/png" href="../images/fbicon16.png">
+	{% load static %}
+	<link rel="icon" type="image/png" href="{% static 'images/fbicon16.png' %}">
 
 	<!-- Bootstrap mobile friendly -->
 	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 	<meta charset="UTF-8">
 	<!-- Bootstrap 4.4.1 JS  &&  jQuery -->
-	<script src="../scripts/jquery.min.js"></script>
-	<script src="../scripts/bootstrap.min.js"></script>
+	<script src="{% static 'scripts/jquery.min.js' %}"></script>
+	<script src="{% static 'scripts/bootstrap.min.js' %}"></script>
 	<!-- Bootstrap 4.4.1 CSS -->
-	<link rel="stylesheet" href="../styles/bootstrap.min.css">
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
 	<!--Font Awsome 5.14 (free version) for icons -->
 	<script src="https://kit.fontawesome.com/d9650cf239.js" crossorigin="anonymous"></script>
 	
 
 	<!-- Custom styles for this template -->
-	<link href="../styles/demo.css" rel="stylesheet" type="text/css">
+	<link href="{% static 'styles/demo.css' %}" rel="stylesheet" type="text/css">
 	<!-- Custom JS -->
-	<script type="text/javascript" src="../scripts/demo.js"></script>
+	<script type="text/javascript" src="{% static 'scripts/demo.js' %}"></script>
 </head>
 <body>
 	<div class="container flex-row">
@@ -27,7 +28,7 @@
 		<div class="cover-container d-flex w-100 h-100 p-3 mx-auto flex-column text-center">
 			<header class="masthead mb-auto">
 				<div class="inner">
-					<img class="logo-header masthead-brand" src="../images/fbNameWhite.png">
+					<img class="logo-header masthead-brand" src="{% static 'images/fbNameWhite.png' %}">
 					<nav class="nav nav-masthead justify-content-center">
 						<a class="nav-link active" href="#">Home</a>
 						<a class="nav-link" href="#">About</a><!-- TODO GNU license shit here and mayber footer stuff if looks bad as foot? -->
@@ -80,7 +81,7 @@
 			
 			<div id="postedbody" class="card posted">
 				<div class="card-body">
-					<img class="profile-pic" src="../images/profilePic.png">
+					<img class="profile-pic" src="{% static 'images/profilePic.png' %}">
 					<div>
 						<h5 class="card-title">Facebooker</h5>
 						<h6 class="card-subtitle mb-2 text-muted">0 mins &middot; <i class="fas fa-globe-americas"></i></h6>
@@ -97,15 +98,15 @@
 
 			<!-- status images -->
 			<div id="status-place-hold" class="status-container">
-				<img class="status-img" src="../images/fbicon.png">
+				<img class="status-img" src="{% static 'images/fbicon.png' %}">
 				<p>Give it a try!</p>
 			</div>	
 			<div id="status-positive" class="status-container no-display">
-				<img class="status-img" src="../images/greenCheck.png">
+				<img class="status-img" src="{% static 'images/greenCheck.png' %}">
 				<p>Looks good!</p>
 			</div>
 			<div id="status-negative" class="status-container no-display">
-				<img class="status-img" src="../images/redX.png">
+				<img class="status-img" src="{% static 'images/redX.png' %}">
 				<p>Seems suspect?</p>
 			</div>
 		</div>
