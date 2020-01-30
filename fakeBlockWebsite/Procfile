@@ -1,1 +1,2 @@
 web: gunicorn fakeBlockWebsite.wsgi
+worker: python common/worker.py
