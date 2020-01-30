@@ -12,4 +12,6 @@ tensorboard
 pandas
 sklearn
 tqdm
+# only required for heroku deployment
 gunicorn
+boto

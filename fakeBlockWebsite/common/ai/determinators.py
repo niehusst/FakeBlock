@@ -5,7 +5,9 @@ from googleapiclient.discovery import build
 
 from common.common import get_logger, Singleton
 from common.ai.classifier.predict import PredictionModel
-from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY 
+
+
+GOOGLE_FACT_API_KEY = S3Connection(os.environ['GOOGLE_FACT_API_KEY'])
 
 err_logger = get_logger(__name__)
 
