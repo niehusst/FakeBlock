@@ -1,5 +1,5 @@
 import nltk
-import cld2
+from langdetect import detect
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
 from googleapiclient.discovery import build
 
@@ -63,8 +63,7 @@ class FakeDeterminator(object, metaclass=Singleton):
                         (0-1.0 range: 0 being real, 1 being fake)              
         """
         #first check that text is english; both fact api and nn can only handle english
-        reliable, _, lang = cld2.detect(text)
-        if not reliable or lang[0][0] != "ENGLISH":
+        if detect(text) != 'en':
             return (False, 0.0)
 
         #perform the more(?) reliable fact check method first
