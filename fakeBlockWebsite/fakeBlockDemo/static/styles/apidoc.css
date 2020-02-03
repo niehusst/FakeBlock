@@ -1,0 +1,30 @@
+/* css for api documentation page */
+
+
+.text-green {
+	color: green;
+}
+
+.text-yellow {
+	color: yellow;
+}
+
+.text-red {
+	color: #FF5A5A;
+}
+
+.type-writer {
+	font-family: Courier;
+}
+
+code, pre {
+	color: lightgreen;
+}
+
+.header {
+	padding-top: 5%;
+}
+
+.method-doc {
+	padding-top: 5%;
+}

@@ -115,3 +115,29 @@ body {
 .icon-space {
 	margin-right: 10px;
 }
+
+/*
+ * Fonts
+ */
+.ubuntu-font {
+	/* Ubuntu font used from Google fonts and made by Dalton Maag */
+	font-family: 'Ubuntu';
+}
+
+/*
+ * Footer
+ */
+.footer-space {
+	padding-top: 10px;
+	width: 100%;
+}
+
+.footer-color {
+	background: #454545;
+	color: white;
+}
+
+.footer-text {
+	line-height: 1;
+	font-size: 12px;
+}

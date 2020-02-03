@@ -148,26 +148,9 @@
   animation-fill-mode: both;
 }
 
-
-/*
- * Footer
+/* 
+ * Post blocker 
  */
-.footer-space {
-	padding-top: 10px;
-	width: 100%;
-}
-
-.footer-color {
-	background: #454545;
-	color: white;
-}
-
-.footer-text {
-	line-height: 1;
-	font-size: 12px;
-}
-
-/* post blocker */
 .block_img {
 	float: left;
 	width: 200px;
