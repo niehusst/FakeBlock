@@ -88,6 +88,7 @@ function handleAPIResponse(response) {
 
 	if(response.fake) {
 		$("#status-negative").show();
+		$("#status-negative").addClass("fadeInDown animated");
 
 		// hide post text
 		$("#postedtxt").hide();
@@ -111,6 +112,7 @@ function handleAPIResponse(response) {
 
 	} else {
 		$("#status-positive").show();
+		$("#status-positive").addClass("fadeInDown animated");
 	}
 }
 
