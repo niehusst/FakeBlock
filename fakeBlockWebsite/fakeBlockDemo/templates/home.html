@@ -18,9 +18,11 @@
 	
 
 	<!-- Custom styles for this template -->
+	<link href="{% static 'styles/common.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'styles/demo.css' %}" rel="stylesheet" type="text/css">
 	<!-- Custom JS -->
 	<script type="text/javascript" src="{% static 'scripts/demo.js' %}"></script>
+	<script type="text/javascript" src="{% static 'scripts/common.js' %}"></script>
 </head>
 <body>
 	<div class="container flex-row">
@@ -30,9 +32,9 @@
 				<div class="inner">
 					<img class="logo-header masthead-brand" src="{% static 'images/fbNameWhite.png' %}">
 					<nav class="nav nav-masthead justify-content-center">
-						<a class="nav-link active" href="#">Home</a>
-						<a class="nav-link" href="#">About</a><!-- TODO GNU license shit here and mayber footer stuff if looks bad as foot? -->
-						<a class="nav-link" href="#">API</a><!-- TODO: api docs here -->
+						<a class="nav-link active" href="{% url 'demo_index_page' %}">Home</a>
+						<a class="nav-link" href="{% url 'about_page' %}">About</a>
+						<a class="nav-link" href="{% url 'api_docs' %}">API</a>
 						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
 					</nav>
 				</div>

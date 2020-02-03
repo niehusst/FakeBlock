@@ -20,3 +20,17 @@ class DemoIndex(View):
 		@return - a TemplateResponse object that loads the index HTML template
 		"""
 		return TemplateResponse(request, 'home.html', {})
+
+# URL about/
+class AboutPage(View):
+	def get(self, request):
+		"""
+		"""
+		return TemplateResponse(request, 'about.html', {})
+
+# URL api/
+class ApiDocsPage(View):
+	def get(self, request):
+		"""
+		"""
+		return TemplateResponse(request, 'api.html', {})
