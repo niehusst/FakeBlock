@@ -1,0 +1,115 @@
+</!DOCTYPE html>
+<html>
+<head>
+	<title>API Docs</title>
+	{% load static %}
+	<link rel="icon" type="image/png" href="{% static 'images/fbicon16.png' %}">
+
+	<!-- Bootstrap mobile friendly -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta charset="UTF-8">
+	<!-- Bootstrap 4.4.1 JS  &&  jQuery -->
+	<script src="{% static 'scripts/jquery.min.js' %}"></script>
+	<script src="{% static 'scripts/bootstrap.min.js' %}"></script>
+	<!-- Bootstrap 4.4.1 CSS -->
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+	<!--Font Awsome 5.14 (free version) for icons -->
+	<script src="https://kit.fontawesome.com/d9650cf239.js" crossorigin="anonymous"></script>
+	<!--Ubuntu font https://fonts.google.com/specimen/Ubuntu#code-->
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:bold' rel='stylesheet' type='text/css'>
+
+	<!-- Custom styles for this template -->
+	<link href="{% static 'styles/common.css' %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/apidoc.css' %}">
+	<!-- Custom JS -->
+	<script type="text/javascript" src="{% static 'scripts/demo.js' %}"></script>
+</head>
+<body>
+	<div class="container flex-row">
+		<div class="cover-container d-flex w-100 p-3 mx-auto flex-column text-center">
+			<header class="masthead mb-auto">
+				<div class="inner">
+					<img class="logo-header masthead-brand" src="{% static 'images/fbNameWhite.png' %}">
+					<nav class="nav nav-masthead justify-content-center">
+						<a class="nav-link" href="{% url 'demo_index_page' %}">Home</a>
+						<a class="nav-link" href="{% url 'about_page' %}">About</a>
+						<a class="nav-link active" href="{% url 'api_docs' %}">API</a>
+						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
+					</nav>
+				</div>
+			</header>
+		</div>
+		<!-- TODO: well formatted api docs here -->
+		<div>
+			<h1 class="text-center header ubuntu-font">FakeBlock Public API Documentation</h1>
+			<h2 class="type-writer method-doc"><span class="text-red">POST</span> <span class="text-yellow">/api/fake/</span></h2>
+			<p>
+				Decides if data provided in request body parameters contain fake news
+				or not. If both body parameters `post_text` and `news_text` are provided, the result 
+				will reflect the truth value of evaluating <code>truth(post_text) or truth(news_text)</code>.
+				Neither parameter is required, and either can be provided.
+			</p>
+			<p>
+				This API expects and responds with a content type of application/json.
+			</p>
+			<h5 class="ubuntu-font">Body Parameters</h5>
+			<pre>
+<b>post_text</b>:	(OPTIONAL) string, contains the plain text body of the Facebook post to evaluate 
+<b>news_text</b>:	(OPTIONAL) string, contains the plain text of the news title banner attached to the Facebook post to evaluate
+			</pre>
+			<h5 class="ubuntu-font">JSON Response Fields</h5>
+			<pre>
+<b>fake</b>:		boolean, whether overall post was determined to contain fake news.
+<b>confidence</b>:	float, the certainty of the post being fake. 
+		(Range 0-1, 0.0 being certainty of post being real, 1.0 being certainty of post being fake.)
+			</pre>
+			<h5 class="ubuntu-font">Example Usage</h5>
+			<p>The following is a simple cURL example that makes a POST request to this API with all possible body parameters.</p>
+			<code>
+				curl -XPOST -H "Content-type: application/json" -d '{"post_text":"string1", "news_text":"string2"}' 'https//:fakeblock.herokuapp.com/api/fake'
+			</code>
+		</div>
+		<div>
+			<h2 class="type-writer method-doc"><span class="text-red">OPTIONS</span> <span class="text-yellow">/api/fake/</span></h2>
+			<p>
+				This method is for handling CORS preflight requests. This is a public API, so
+				all origins are allowed.
+				It will always return a JSON response containing the below headers only:
+			</p>
+			<pre><code><span>
+headers = {
+	'Access-Control-Allow-Origin': "*",
+	'Access-Control-Allow-Methods': ["POST", "OPTIONS"],
+	'Access-Control-Allow-Headers': [
+		'accept',
+		'accept-encoding',
+		'authorization',
+		'content-type',
+		'dnt',
+		'origin',
+		'user-agent',
+		'x-csrftoken',
+		'x-requested-with',
+	],
+	'Content-Type': "application/json",
+}	
+					</span>
+				</code>
+			</pre>
+		</div>
+
+		<footer class="footer-color py-5 main-footer">
+			<div class="container footer-space text-center">
+
+				<p class="footer-text text-white">
+					Built with <a href="https://getbootstrap.com/">Bootstrap</a>,  <a href="http://fontawesome.io">Font Awesome</a>, and
+					<a href="https://fonts.google.com/specimen/Ubuntu#code">Ubuntu</a> (the font).
+					Hosted by <a href="https://www.heroku.com/">Heroku</a>.
+				</p>
+				<hr>
+				<a href="https://github.com/niehusst/FakeBlock/blob/master/LICENSE"><p class="footer-text text-white">Copyleft &copy; 2020 Liam Niehus-Staab</p></a>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>

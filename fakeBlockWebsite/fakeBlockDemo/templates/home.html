@@ -15,12 +15,15 @@
 	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
 	<!--Font Awsome 5.14 (free version) for icons -->
 	<script src="https://kit.fontawesome.com/d9650cf239.js" crossorigin="anonymous"></script>
-	
+	<!--Ubuntu font https://fonts.google.com/specimen/Ubuntu#code-->
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:bold' rel='stylesheet' type='text/css'>
 
 	<!-- Custom styles for this template -->
+	<link href="{% static 'styles/common.css' %}" rel="stylesheet" type="text/css">
 	<link href="{% static 'styles/demo.css' %}" rel="stylesheet" type="text/css">
 	<!-- Custom JS -->
 	<script type="text/javascript" src="{% static 'scripts/demo.js' %}"></script>
+	<script type="text/javascript" src="{% static 'scripts/common.js' %}"></script>
 </head>
 <body>
 	<div class="container flex-row">
@@ -30,16 +33,16 @@
 				<div class="inner">
 					<img class="logo-header masthead-brand" src="{% static 'images/fbNameWhite.png' %}">
 					<nav class="nav nav-masthead justify-content-center">
-						<a class="nav-link active" href="#">Home</a>
-						<a class="nav-link" href="#">About</a><!-- TODO GNU license shit here and mayber footer stuff if looks bad as foot? -->
-						<a class="nav-link" href="#">API</a><!-- TODO: api docs here -->
+						<a class="nav-link active" href="{% url 'demo_index_page' %}">Home</a>
+						<a class="nav-link" href="{% url 'about_page' %}">About</a>
+						<a class="nav-link" href="{% url 'api_docs' %}">API</a>
 						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
 					</nav>
 				</div>
 			</header>
 
 			<main role="main" class="inner cover my-auto">
-				<h1 class="cover-heading">No more fake news.</h1>
+				<h1 class="cover-heading ubuntu-font">No more fake news.</h1>
 				<p class="lead">
 					FakeBlock is a Chrome browser extension to prevent you from becoming misinformed by 
 					your Facebook news feed. <br>
@@ -53,7 +56,7 @@
 			</main>
 		</div>
 
-		<h3 id="demo-panel" class="text-center demo-heading">DEMO</h3>
+		<h3 id="demo-panel" class="text-center demo-heading ubuntu-font">DEMO</h3>
 		<p class="demo-text text-center">
 			Just type something into the text box and click Post, as if it were Facebook! FakeBlock will analyze your "post"
 			and behave like the Chrome extension does so that you can get a taste for what FakeBlock can do for you.
@@ -123,8 +126,8 @@
 
 				<p class="footer-text text-white">
 					Built with <a href="https://getbootstrap.com/">Bootstrap</a>,  <a href="http://fontawesome.io">Font Awesome</a>, and
-					<a href="https://fonts.google.com/specimen/Press+Start+2P?selection.family=Press+Start+2P">Press Start 2P</a>.
-					Hosted with &#x1F496; by <a href="https://pages.github.com/">Github Pages</a>
+					<a href="https://fonts.google.com/specimen/Ubuntu#code">Ubuntu</a> (the font).
+					Hosted by <a href="https://www.heroku.com/">Heroku</a>.
 				</p>
 				<hr>
 				<a href="https://github.com/niehusst/FakeBlock/blob/master/LICENSE"><p class="footer-text text-white">Copyleft &copy; 2020 Liam Niehus-Staab</p></a>

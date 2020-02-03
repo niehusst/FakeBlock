@@ -76,7 +76,9 @@ local Django server.
 * (Unused) Tesseract OCR modified from work by [johnlinp](https://github.com/johnlinp/meme-ocr)
 * [Heroku](https://www.heroku.com/) for hosting the API and demo website
 * [Bootstrap](https://getbootstrap.com/) for helping make my demo website pretty
+* [Font Awesome 5](https://fontawesome.com/) for helping my demo website look even PRETTIER
 * [Zoltán Szalay](https://www.flickr.com/photos/ins) on [Toptal Subtle Patterns](https://www.toptal.com/designers/subtlepatterns/diagmonds/) for the free background texture on the demo website
+* [Dalton Maag on Google Fonts](https://fonts.google.com/specimen/Ubuntu#code) for the beautiful Ubuntu font 
 * Training data for the neural network was compiled from datasets provided by 
 [Megan Risdal](https://www.kaggle.com/mrisdal/fake-news) under CC0 licensing, 
 [lutzhamel](https://github.com/lutzhamel/fake-news) under GNU 3.0 licensing, 
