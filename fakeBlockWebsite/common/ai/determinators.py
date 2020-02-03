@@ -1,11 +1,15 @@
+import os
 import nltk
-import cld2
 from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
 from googleapiclient.discovery import build
+from langdetect import detect
 
 from common.common import get_logger, Singleton
 from common.ai.classifier.predict import PredictionModel
-from fakeBlockWebsite.secrets import GOOGLE_FACT_API_KEY 
+
+
+GOOGLE_FACT_API_KEY = os.environ['GOOGLE_FACT_API_KEY']
 
 err_logger = get_logger(__name__)
 
@@ -49,7 +53,7 @@ class FakeDeterminator(object, metaclass=Singleton):
             if news_fake:
                 return (True, conf)
         
-        return (False, conf)
+        return (False, 1.0)
 
     def _determine(self, text):
         """
@@ -63,8 +67,7 @@ class FakeDeterminator(object, metaclass=Singleton):
                         (0-1.0 range: 0 being real, 1 being fake)              
         """
         #first check that text is english; both fact api and nn can only handle english
-        reliable, _, lang = cld2.detect(text)
-        if not reliable or lang[0][0] != "ENGLISH":
+        if detect(text) != 'en':
             return (False, 0.0)
 
         #perform the more(?) reliable fact check method first

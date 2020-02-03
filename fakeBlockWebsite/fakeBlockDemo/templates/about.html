@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>About</title>
+	{% load static %}
+	<link rel="icon" type="image/png" href="{% static 'images/fbicon16.png' %}">
+
+	<!-- Bootstrap mobile friendly -->
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<meta charset="UTF-8">
+	<!-- Bootstrap 4.4.1 JS  &&  jQuery -->
+	<script src="{% static 'scripts/jquery.min.js' %}"></script>
+	<script src="{% static 'scripts/bootstrap.min.js' %}"></script>
+	<!-- Bootstrap 4.4.1 CSS -->
+	<link rel="stylesheet" href="{% static 'styles/bootstrap.min.css' %}">
+	<!--Font Awsome 5.14 (free version) for icons -->
+	<script src="https://kit.fontawesome.com/d9650cf239.js" crossorigin="anonymous"></script>
+	<!--Ubuntu font https://fonts.google.com/specimen/Ubuntu#code-->
+	<link href='http://fonts.googleapis.com/css?family=Ubuntu:bold' rel='stylesheet' type='text/css'>
+	
+	<!-- Custom styles for this template -->
+	<link href="{% static 'styles/common.css' %}" rel="stylesheet" type="text/css">
+	<link rel="stylesheet" type="text/css" href="{% static 'styles/about.css' %}">
+	<!-- Custom JS -->
+	<script type="text/javascript" src="{% static 'scripts/demo.js' %}"></script>
+</head>
+<body>
+	<div class="container flex-row">
+		<div class="cover-container d-flex w-100 p-3 mx-auto flex-column text-center">
+			<header class="masthead mb-auto">
+				<div class="inner">
+					<img class="logo-header masthead-brand" src="{% static 'images/fbNameWhite.png' %}">
+					<nav class="nav nav-masthead justify-content-center">
+						<a class="nav-link" href="{% url 'demo_index_page' %}">Home</a>
+						<a class="nav-link active" href="{% url 'about_page' %}">About</a>
+						<a class="nav-link" href="{% url 'api_docs' %}">API</a>
+						<a class="nav-link" href="https://github.com/niehusst/FakeBlock">Source</a>
+					</nav>
+				</div>
+			</header>
+		</div>
+
+		<div class="pad-butt">
+			<h2 class="about-header ubuntu-font text-center">Inspiration</h2>
+			<p>
+				Ever since the term ‘fake news’ started floating around in 2016 United States election, I knew it was going 
+				to be a big problem going forward. With the 2020 election coming up soon (at the time of making this project), 
+				I decided to make an effort do something to combat this monster of a problem at one of its biggest sources, Facebook, by
+				creating the FakeBlock Chrome browser extension. With this project, my goal was to create a tool, that was as politically
+				unbiased as possible, to attempt to spot fake news by only the contents of a Facebook post (Truly, an impossible task. Try
+				identifying fake news from only a title sometime). But, I decided to proceed with my flawed idea in order to get 
+				people to notice that while on Facebook, they are constantly absorbing news: and often from a variety of sources that 
+				may have less integrity than an organization with the time, money and willingness to fully investigate a story before
+				passing it on. And believe me, FakeBlock will find those stories, and it may or may not flag them because it has a difficult
+				job.
+			</p>
+			<p>
+				For a single college student, this has been an enormous task and a rewarding learning experience. I hope that using
+				(or even just seeing) FakeBlock helps you think more critically about where you get your news from and to remain
+				critical of sensationalist news stories. While I am aware that my own efforts to tackle this problem have fallen 
+				far short of the "perfect tool" mark, I hope that it may at least spark conversation and thought on the complex topics of 
+				fake news and fact checking.
+			</p>
+			<!-- boring but important license poo -->
+			<h2 class="about-header ubuntu-font text-center">Boring, but Important</h2>
+			<p>
+				This software is licensed under the GNU GENERAL PUBLIC LICENSE v3.0, which is a copyleft license. That means that it's
+				free! But that also means that if you use, modify, or distribute anything derived from FakeBlock, you are obligated by the licensing to also make your project under the GPLv3 license.
+			</p>
+			<pre class="text-center">
+FakeBlock is Copyright (C) 2020 intellectual property of Liam Niehus-Staab.
+
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+			</pre>
+			<p>
+				You may find a full copy of the GNU General Public License <b><a href="https://www.gnu.org/licenses">HERE</a></b>.
+			</p>
+		</div>
+
+		<footer class="footer-color py-5 main-footer">
+			<div class="container footer-space text-center">
+
+				<p class="footer-text text-white">
+					Built with <a href="https://getbootstrap.com/">Bootstrap</a>,  <a href="http://fontawesome.io">Font Awesome</a>, and
+					<a href="https://fonts.google.com/specimen/Ubuntu#code">Ubuntu</a> (the font).
+					Hosted by <a href="https://www.heroku.com/">Heroku</a>.
+				</p>
+				<hr>
+				<a href="https://github.com/niehusst/FakeBlock/blob/master/LICENSE"><p class="footer-text text-white">Copyleft &copy; 2020 Liam Niehus-Staab</p></a>
+			</div>
+		</footer>
+	</div>
+</body>
+</html>

@@ -1,19 +1,15 @@
 # FakeBlock
-A chrome plugin to prevent Facebook users from becoming misinformed by 
-their news feeds by obscuring posts determined to be fake news.
+Fake block is a chrome extension to prevent Facebook users from becoming 
+misinformed by their news feeds by obscuring posts determined to be fake news.
 Utilizing a mixture of AI and the Google FactCheck API, FakeBlock
 meticulously examines each post to determine its legitimacy before
 allowing it to be shown to the user.
 
-TODO specifically target englush (political?) fake new
-TODO ack data sets
-{
-	https://www.kaggle.com/c/twitter-sentiment-analysis2/data
-	https://github.com/KaiDMML/FakeNewsNet
-	https://github.com/lutzhamel/fake-news
-	https://www.kaggle.com/mrisdal/fake-news
-}
-TODO add download link
+This tool only has support for English-language, political news checking;
+any and all other languages will be ignored without further examination.
+
+
+TODO add chrome store download link
 
 ### Usage
 Download the extension from the Google store [here](), and navigate to
@@ -32,11 +28,12 @@ and then immediatly released.
 
 ### Getting Started with Development
 If you want to make your own adjustments to this project, the first step is 
-installing the dependencies with `pip install -r DEPS`. If you want to use the 
-OCR module that I decided not to include, you will also have to download Tesseract,
-following the instructions on [their github](https://github.com/tesseract-ocr/tesseract/wiki).
-This will set you up with the necessary tools to work with the Django API and TensorFlow
-neural network. I developed this project using Python 3.6.5.
+installing the dependencies with `pip install -r requirements.txt`. This will set you up with 
+the necessary tools to work with the Django API and TensorFlow neural network. If 
+you want to use the OCR module that I decided not to include, you will also have 
+to download Tesseract, following the instructions on [their github](https://github.com/tesseract-ocr/tesseract/wiki). 
+I developed this project using Python 3.6.5. The Chrome extension aspect needs
+no installations (other than an up-to-date Chrome browser).
 
 To gain access to the Google FactCheck Claim Search API client library, you will need to set up an API
 key through a Google account to authorize your access to their API. That can be done for free
@@ -73,9 +70,44 @@ local Django server.
 * **Liam Niehus-Staab** - [niehusst](https://github.com/niehusst)
 
 ## Acknowledgements
-* Custom logo and images were adjusted from stock images under Creative Commons and from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
+* Custom logos were adjusted from stock images under Creative Commons and other images were taken from [Pixabay](https://pixabay.com/users/clker-free-vector-images-3736/)
 * [Imgur](https://imgur.com/) for free online image hosting for my logos
 * [Google FactCheck API](https://developers.google.com/fact-check/tools/api/)
 * (Unused) Tesseract OCR modified from work by [johnlinp](https://github.com/johnlinp/meme-ocr)
 * [Heroku](https://www.heroku.com/) for hosting the API and demo website
-* [Bootstrap]()
+* [Bootstrap](https://getbootstrap.com/) for helping make my demo website pretty
+* [Font Awesome 5](https://fontawesome.com/) for helping my demo website look even PRETTIER
+* [Zoltán Szalay](https://www.flickr.com/photos/ins) on [Toptal Subtle Patterns](https://www.toptal.com/designers/subtlepatterns/diagmonds/) for the free background texture on the demo website
+* [Dalton Maag on Google Fonts](https://fonts.google.com/specimen/Ubuntu#code) for the beautiful Ubuntu font 
+* Training data for the neural network was compiled from datasets provided by 
+[Megan Risdal](https://www.kaggle.com/mrisdal/fake-news) under CC0 licensing, 
+[lutzhamel](https://github.com/lutzhamel/fake-news) under GNU 3.0 licensing, 
+(anonymous) [Kaggle Twitter data](https://www.kaggle.com/c/twitter-sentiment-analysis2/data) provided freely without license,
+and [KaiDMML](https://github.com/KaiDMML/FakeNewsNet) data was provided given the citation of the following papers: 
+
+```
+@article{shu2018fakenewsnet,
+  title={FakeNewsNet: A Data Repository with News Content, Social Context and Dynamic Information for Studying Fake News on Social Media},
+  author={Shu, Kai and  Mahudeswaran, Deepak and Wang, Suhang and Lee, Dongwon and Liu, Huan},
+  journal={arXiv preprint arXiv:1809.01286},
+  year={2018}
+}
+
+@article{shu2017fake,
+  title={Fake News Detection on Social Media: A Data Mining Perspective},
+  author={Shu, Kai and Sliva, Amy and Wang, Suhang and Tang, Jiliang and Liu, Huan},
+  journal={ACM SIGKDD Explorations Newsletter},
+  volume={19},
+  number={1},
+  pages={22--36},
+  year={2017},
+  publisher={ACM}
+}
+
+@article{shu2017exploiting,
+  title={Exploiting Tri-Relationship for Fake News Detection},
+  author={Shu, Kai and Wang, Suhang and Liu, Huan},
+  journal={arXiv preprint arXiv:1712.07709},
+  year={2017}
+}
+```
