@@ -1,0 +1,12 @@
+/* css for 500 and 404 pages */
+
+h1.cover-heading {
+	font-size: 100pt;
+	padding-top: -10%;
+}
+
+.lead {
+	font-size: 12pt;
+	color: lightgray;
+	padding-top: 10%;
+}

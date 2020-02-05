@@ -2,6 +2,7 @@ from django.template.response import TemplateResponse
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views import View
+from django.shortcuts import render
 
 from rest_framework.status import HTTP_400_BAD_REQUEST
 from rest_framework.decorators import api_view
@@ -43,3 +44,11 @@ class ApiDocsPage(View):
 		@return - a TemplateResponse object that loads the api HTML template
 		"""
 		return TemplateResponse(request, 'api.html', {})
+
+
+# Custom error page views
+def handler404(request, exception):
+    return render(request, 'custom404.html', status=404)
+
+def handler500(request):
+    return render(request, 'custom500.html', status=500)
