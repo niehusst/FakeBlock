@@ -93,11 +93,11 @@ function handleAPIResponse(response) {
 		// hide post text
 		$("#postedtxt").hide();
 
-		// inject blocker
+		// inject blocker https://i.imgur.com/zPuiLgy.png
 		var blocker_html = `
 		<div class="bg_filler">
 			<div class="content_houser">
-				<img class="block_img" src="https://i.imgur.com/zPuiLgy.png" alt="Blocked">
+				<img class="block_img" src="/static/images/fbicon.png" alt="Blocked">
 				<p class="block_txt">
 					This post has been judged to be <b>` + Math.floor(response.confidence*100) + `%</b> likely to contain fake news.
 				</p>
