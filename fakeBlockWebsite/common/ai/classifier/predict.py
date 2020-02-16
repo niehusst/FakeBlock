@@ -1,12 +1,13 @@
+"""
 import tensorflow as tf
-from tensorflow.keras.preprocessing.text import Tokenizer
 from keras.preprocessing.text import tokenizer_from_json
 from tensorflow.keras.preprocessing.sequence import pad_sequences
-from tensorflow.keras.utils import to_categorical
-
+"""
 
 class PredictionModel(object):
 	def __init__(self, shape_file, weights_file, tokenizer_file):
+		import tensorflow as tf
+		from keras.preprocessing.text import tokenizer_from_json
 		#load up model
 		self.model = self._load_model(shape_file, weights_file)
 		with open(tokenizer_file, 'r') as json_fp:
@@ -35,6 +36,7 @@ class PredictionModel(object):
 		@return loaded_model - a fully trained tf/keras model
 		"""
 		print("Loading model from disk...", end="", flush=True)
+		import tensorflow as tf
 		# load json and create model
 		json_file = open(shape_file, 'r')
 		loaded_model_json = json_file.read()
@@ -53,6 +55,8 @@ class PredictionModel(object):
 		@return - Python list, a vector encoded array of positive integers
 					that represent `text` in a way the model understandes
 		"""
+
+		from tensorflow.keras.preprocessing.sequence import pad_sequences
 		MAX_SEQUENCE_LENGTH = 200
 		# use trained tokenizer to convert to seqs
 		sequences = self.tokenizer.texts_to_sequences([text])

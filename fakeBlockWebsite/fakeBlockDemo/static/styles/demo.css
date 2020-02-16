@@ -96,6 +96,7 @@
 	text-align: center;
 	margin-left: 15%;
 	vertical-align: top;
+	pointer-events: none;
 }
 
 .status-img {
