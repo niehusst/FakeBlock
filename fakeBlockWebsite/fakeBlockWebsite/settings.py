@@ -16,11 +16,10 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-# Quick-start development settings - unsuitable for production
-#TODO: am deploy ready?
+# for production checklist:
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-# TODO SECURITY WARNING: don't run with debug turned on in production!
+# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
 ALLOWED_HOSTS = ['127.0.0.1', '0.0.0.0', '.herokuapp.com']
@@ -117,6 +116,12 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
+# SSL security
+SECURE_SSL_REDIRECT = True
+
+# Cookies
+CSRF_COOKIE_SECURE = True
+
 # Internationalization
 # https://docs.djangoproject.com/en/2.2/topics/i18n/
 
@@ -139,5 +144,4 @@ STATICFILES_DIRS = (
     os.path.join(BASE_DIR, 'fakeBlockDemo/static'),
 )
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
-#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'common.storage.WhiteNoiseStaticFilesStorage'
