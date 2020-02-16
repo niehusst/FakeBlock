@@ -8,10 +8,22 @@ from langdetect import detect
 from common.common import get_logger, Singleton
 from common.ai.classifier.predict import PredictionModel
 
+import threading
+from threading import Thread
+
 
 GOOGLE_FACT_API_KEY = os.environ['GOOGLE_FACT_API_KEY']
 
 err_logger = get_logger(__name__)
+
+def async_init(obj, threshold, shape_file, weights_file, tokenizer_file):
+    #download resources for sentiment analysis
+    nltk.download('vader_lexicon') 
+    nltk.download('punkt')
+    nltk.download('averaged_perceptron_tagger')
+    obj.sentiment_analyze = SentimentIntensityAnalyzer()
+    obj.predictor = PredictionModel(shape_file, weights_file, tokenizer_file)
+    obj.threshold = threshold
 
 class FakeDeterminator(object, metaclass=Singleton):
     """
@@ -22,13 +34,9 @@ class FakeDeterminator(object, metaclass=Singleton):
     """
 
     def __init__(self, threshold, shape_file, weights_file, tokenizer_file):
-        #download resources for sentiment analysis
-        nltk.download('vader_lexicon') 
-        nltk.download('punkt')
-        nltk.download('averaged_perceptron_tagger')
-        self.sentiment_analyze = SentimentIntensityAnalyzer()
-        self.predictor = PredictionModel(shape_file, weights_file, tokenizer_file)
-        self.threshold = threshold
+        init_thread = Thread(target=async_init, 
+            args=(self, threshold, shape_file, weights_file, tokenizer_file))
+        init_thread.start()
 
     def evaluate_post(self, post_txt=None, news_txt=None):
         """
