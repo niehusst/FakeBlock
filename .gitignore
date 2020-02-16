@@ -5,3 +5,4 @@ __pycache__
 *.pyc
 tb_logs/*
 trained_model/*
+.env
