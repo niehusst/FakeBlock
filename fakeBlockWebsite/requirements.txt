@@ -12,7 +12,7 @@ tensorboard
 pandas
 sklearn
 tqdm
-rq
+whitenoise
 # only required for heroku deployment
 gunicorn
 boto

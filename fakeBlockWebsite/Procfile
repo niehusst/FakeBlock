@@ -1,2 +1,1 @@
-web: gunicorn fakeBlockWebsite.wsgi
-worker: python common/worker.py
+web: python manange.py collectstatic --noinput; gunicorn fakeBlockWebsite.wsgi
