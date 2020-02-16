@@ -17,7 +17,6 @@ class PredictionModel(object):
 		"""
 		use the loaded model to make binary predicttion on the
 		truthyness of the input `text`
-		TODO: check if text is english and dont run on it if it isnt?
 
 		@param text - String, news title/fb post to evaluate
 		@return - Float, a probability in the range of 0-1 where a

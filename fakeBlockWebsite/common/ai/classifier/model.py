@@ -32,7 +32,7 @@ test_size_percent = 0.20
 # Learning
 step_size = 0.001
 BATCH_SIZE = 32
-num_epochs = 2  #TODO training caps out around 4 ephochs?
+num_epochs = 2  #TODO training caps out around 4 ephochs
 
 # Data info
 MAX_SEQUENCE_LENGTH = 200  # max num words in typical FB post
@@ -56,7 +56,7 @@ print("Loading and processing data\n")
 
 data_frame = pd.read_csv(CSV_PATH)
 
-"""TODO: understand what is happeingin here. Could other/extra processing improve results?
+"""
 Process the text input (news titles) into tokenized number
 sequences that the model can more easily learn/be run on.
 """ 
@@ -123,7 +123,7 @@ I could make a classification model, but given the ambiguity of the
 problem at hand, a prediction (regression) model would likely be better
 (response can be threshholded after the fact)
 
-TODO: compare the many diff models
+compare the many diff models
 convNet { 
     #seems to be overfitting; test acc doesnt get much better after more than 1 epoch
     Final (testing) accuracy: 0.7841007709503174
@@ -204,15 +204,6 @@ metrics = model.evaluate(test_titles, test_fake)
 print("Final loss: {}\nFinal accuracy: {}\nFinal AUC: {}".format(metrics[0], metrics[1], metrics[3]))
 
 
-"""
-#TODO test model using test dataset and see what samples it misses most and what probability the missed samples had. 
-#TODO find best threshhold value
-for i in range(len(test_titles)):
-    title = test_titles[i]
-    target = test_fake[i]
-    model.predict(title)
-"""
-
 ###                 SAVING THE MODEL                 ###
 # save the model so that it can be loaded without training later
 
@@ -223,4 +214,3 @@ with open(shape_path, "w") as json_file:
 # serialize weights to HDF5
 model.save_weights(weight_path)
 print("Saved model to disk")
-

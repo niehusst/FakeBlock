@@ -2,7 +2,7 @@
 import os
 import pandas as pd
 import urllib.request
-#TODO ack data in README
+
 #data cleaning script
 url_base = 'https://raw.githubusercontent.com/KaiDMML/FakeNewsNet/master/dataset/'
 url_combined_data = 'https://raw.githubusercontent.com/lutzhamel/fake-news/master/data/fake_or_real_news.csv'

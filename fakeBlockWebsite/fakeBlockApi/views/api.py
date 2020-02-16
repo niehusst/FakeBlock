@@ -11,7 +11,7 @@ shapef = base_path + "model_shape.json"
 weightf = base_path + "model_weights.h5"
 tokenf = base_path + "tokenizer.json"
 thresh = 0.7
-# get the singleton instance of FakeDeterminator class     TODO does it even need to be singleton??
+# get the singleton instance of FakeDeterminator class
 determinator = FakeDeterminator(thresh, shapef, weightf, tokenf)
 
 
@@ -24,8 +24,6 @@ class FakeNewsDetectorApi(APIView):
 		or not. If both `post_text` and `news_text` are provided, the result 
 		will reflect the truth value of evaluating `post_text` or `news_text`.
 		Neither parameter is required, and either can be provided.
-
-		#TODO: curl example?
 
 		@param request - a rest_framework.request.Request object with any of the 
 						following body parameters:
@@ -74,4 +72,3 @@ class FakeNewsDetectorApi(APIView):
 			'Content-Type': "application/json",
 		}
 		return Response(data={}, headers=headers)
-
