@@ -1,6 +1,6 @@
 #pip installations 
 #installing tf may require a `conda remove wrapt`
-django==2.2.6
+django==2.2.10
 djangorestframework==3.9.2
 numpy
 django-cors-headers
