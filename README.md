@@ -50,12 +50,17 @@ value of the `apiUrl` parameter in the **events.js** file to `'http://127.0.0.1:
 for the extension to find your localy hosted API. Lastly to start the API server,
 just call `python manage.py runserver` to start the Django server to host the API locally.
 
-Lastly, you may have noticed that a `secrets.py` file is missing from the `fakeBlockWebsite/fakeBlockWebsite/`
-directory (for obvious security reasons), so you will have to create your own. It should contain:
+Lastly, if you have debug mode on, you may have noticed that a `secrets.py` file is missing 
+from the `fakeBlockWebsite/fakeBlockWebsite/` directory (for obvious security reasons), so 
+you will have to create your own. It should contain:
 ```
 SECRET_KEY='your django secret key here'
 GOOGLE_FACT_API_KEY='your google api key here'
 ```
+Alternatively, if you have debug mode off, you will need to set these as enviroment variables.
+
+The last step of project setup is to run `python manage.py collectstatic` to conglomerate
+all the static files into one location where the app will look for them.
 
 Once everything is setup, you will need a Facebook account in order to test
 it on `https://www.facebook.com/?sk=nf` (the only URL the extension is set to run on).
