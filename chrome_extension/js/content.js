@@ -211,12 +211,12 @@ $(function() {
 			// mark post as looked at
 			visitedPosts[$(this).attr('id')] = true;
 			
-			isFakeNews($(this)); //TODO rename?
+			isFakeNews($(this)); 
 		}
 	});
 
 	// set up click event listening for blocked window buttons
-	$(document).on('click', '.read_btn', function() { //TODO needs moving to the asynch callback?
+	$(document).on('click', '.read_btn', function() { 
 		closeBlock($(this));
 	});
 });

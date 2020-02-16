@@ -57,7 +57,7 @@ $(document).on('click', '#make-post', function(event) {
 			}),
 			method: "POST"
 		};
-		const apiUrl = 'http://127.0.0.1:8000/api/fake'; //TODO: change to real url after deploy 2 heroku
+		const apiUrl = 'https://fakeblocker.herokuapp.com/api/fake';
 
 		fetch(apiUrl, postData)
 		.then(response => response.json())
