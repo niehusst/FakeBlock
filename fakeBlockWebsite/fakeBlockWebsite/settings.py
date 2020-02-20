@@ -19,7 +19,6 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # for production checklist:
 # See https://docs.djangoproject.com/en/2.2/howto/deployment/checklist/
 
-
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
@@ -123,8 +122,8 @@ SECURE_SSL_REDIRECT = True
 # Cookies
 CSRF_COOKIE_SECURE = True
 
-Internationalization
-https://docs.djangoproject.com/en/2.2/topics/i18n/
+# Internationalization
+# https://docs.djangoproject.com/en/2.2/topics/i18n/
 
 LANGUAGE_CODE = 'en-us'
 
