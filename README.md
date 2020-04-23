@@ -8,15 +8,17 @@ allowing it to be shown to the user.
 This tool only has support for English-language, political news checking;
 any and all other languages will be ignored without further examination.
 
-
-TODO add chrome store download link
+Because this tool does not accurately block fake news, I have opted to not
+deploy the chrome extension to the chrome store in an effort to avoid
+confusion on the abilities of this project.
 
 ### Usage
-Download the extension from the Google store [here](), and navigate to
-`https://www.facebook.com/?sk=nf` where you will need an account in order
-to see your news feed. You should see that the FakeBlock icon in the top
-right has lit up, and is no longer gray. Clicking on the icon will open a 
-small popup that contains the setting to activate/deactivate the fake news
+Upload the chrome extension to your own Chrome browswer as a custum extension
+(more exact instructions found [here](https://developer.chrome.com/extensions/getstarted)), 
+and navigate to your Facebook newsfeed; `https://www.facebook.com/?sk=nf` where 
+you will need an account in order to see your news feed. You should see that the 
+FakeBlock icon in the top right has lit up, and is no longer gray. Clicking on the 
+icon will open a small popup that contains the setting to activate/deactivate the fake news
 blocker; make sure the switch is on if you want FakeBlock to block fake news
 for you! And you can always switch it off if you want to stop blocking 
 posts for a while.
